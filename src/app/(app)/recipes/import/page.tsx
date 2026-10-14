@@ -18,6 +18,16 @@ export default function ImportPage() {
         <ImportEditor />
       </section>
       <section className="card">
+        <h2>Oprava pokynov pôvodných šablón</h2>
+        <p>
+          Už importované recepty sa aktualizujú iba po kontrole a potvrdení
+          novej verzie.
+        </p>
+        <Link href="/recipes/corrections" className="button button-secondary">
+          Skontrolovať skladovanie a zohrievanie
+        </Link>
+      </section>
+      <section className="card">
         <h2>Začnite obľúbenými jedlami</h2>
         <p>15 editovateľných šablón. Rovnaká sada sa pridá iba raz.</p>
         <form action={importDefaults}>

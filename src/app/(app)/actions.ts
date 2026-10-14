@@ -163,6 +163,14 @@ export async function archiveRecipe(form: FormData) {
 }
 export async function importDefaults() {
   const data = importSchema.parse(seedRecipes);
+  const { client } = await userDb();
+  const { data: existing, error } = await client
+    .from("operation_requests")
+    .select("id")
+    .eq("id", data.importId)
+    .maybeSingle();
+  if (error) redirect("/recipes?error=operation");
+  if (existing) redirect("/recipes/corrections");
   await rpc(
     "import_recipes",
     { p_import_id: data.importId, p_recipes: data.payload },
