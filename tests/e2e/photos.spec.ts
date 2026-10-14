@@ -238,3 +238,71 @@ test("nový recept: náhľad pred uložením a upload po vytvorení", async ({
     "Moja mrkva",
   );
 });
+
+test("importovaný recept: výber fotografie funguje aj po chybe načítania", async ({
+  page,
+}) => {
+  await page.goto("/login");
+  await page.getByLabel("E-mail").fill(process.env.FREEZER_TEST_EMAIL!);
+  await page
+    .getByLabel("Heslo", { exact: true })
+    .fill(process.env.FREEZER_TEST_PASSWORD!);
+  await page.getByRole("button", { name: "Prihlásiť sa", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Dobrý deň, čo si dáme?" }),
+  ).toBeVisible();
+  const client = createClient(
+    process.env.FREEZER_TEST_API_URL!,
+    process.env.FREEZER_TEST_ANON_KEY!,
+    { auth: { persistSession: false } },
+  );
+  await client.auth.signInWithPassword({
+    email: process.env.FREEZER_TEST_EMAIL!,
+    password: process.env.FREEZER_TEST_PASSWORD!,
+  });
+  const recipes = await client
+    .from("recipe_latest")
+    .select("recipe_id")
+    .limit(1);
+  const id = recipes.data![0].recipe_id;
+  await page.route(`**/api/recipes/${id}/photos`, async (route) => {
+    if (route.request().method() === "GET")
+      await route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({
+          message:
+            "Fotografie nie sú dostupné. Skontrolujte databázovú migráciu.",
+        }),
+      });
+    else await route.continue();
+  });
+  await page.goto(`/recipes/${id}/edit`);
+  await expect(
+    page.getByText(
+      "Fotografie nie sú dostupné. Skontrolujte databázovú migráciu.",
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Pridať fotografiu", exact: true }),
+  ).toBeEnabled();
+  await expect(
+    page.getByRole("button", { name: "Odfotiť jedlo", exact: true }),
+  ).toBeEnabled();
+  const chooser = page.waitForEvent("filechooser");
+  await page
+    .getByRole("button", { name: "Pridať fotografiu", exact: true })
+    .click();
+  expect((await chooser).isMultiple()).toBe(true);
+  await page.unroute(`**/api/recipes/${id}/photos`);
+  await page
+    .getByRole("button", {
+      name: "Skúsiť načítať fotografie znova",
+      exact: true,
+    })
+    .click();
+  await expect(page.getByText("Fotografie boli načítané.")).toBeVisible();
+  await expect(page.locator(".photo-manager").getByRole("alert")).toHaveCount(
+    0,
+  );
+});

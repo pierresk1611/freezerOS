@@ -46,6 +46,7 @@ export function PhotoManager({
 }) {
   const [photos, setPhotos] = useState(initial);
   const [drafts, setDrafts] = useState<DraftPhoto[]>([]);
+  const [loadError, setLoadError] = useState(false);
   const [revision, setRevision] = useState<number | null>(null);
   const [busy, setBusy] = useState(false),
     [message, setMessage] = useState("");
@@ -63,6 +64,7 @@ export function PhotoManager({
     if (!r.ok) throw new Error(d.message);
     setPhotos(d.photos);
     setRevision(d.revision);
+    setLoadError(false);
     return d;
   }
   useEffect(() => {
@@ -75,11 +77,20 @@ export function PhotoManager({
         if (active) {
           setPhotos(d.photos);
           setRevision(d.revision);
+          setLoadError(false);
         }
       })
-      .catch(() => {
-        if (active)
-          setMessage("Fotografie sa nepodarilo načítať. Obnovte stránku.");
+      .catch((error) => {
+        if (active) {
+          setLoadError(true);
+          setMessage(
+            error instanceof Error &&
+              !(error instanceof TypeError) &&
+              !(error instanceof SyntaxError)
+              ? error.message
+              : "Fotografie sa nepodarilo načítať. Skontrolujte pripojenie a skúste znova.",
+          );
+        }
       });
     return () => {
       active = false;
@@ -189,19 +200,48 @@ export function PhotoManager({
       <div className="photo-actions">
         <button
           type="button"
-          disabled={busy || (!!recipeId && revision === null)}
+          disabled={busy}
           onClick={() => input.current?.click()}
         >
           Pridať fotografiu
         </button>
         <button
           type="button"
-          disabled={busy || (!!recipeId && revision === null)}
+          disabled={busy}
           onClick={() => camera.current?.click()}
         >
           Odfotiť jedlo
         </button>
       </div>
+      {loadError && (
+        <div className="recipe-notice" role="alert">
+          <p>
+            Správa existujúcich fotografií nie je načítaná. Výber súboru zostáva
+            dostupný; uloženie vyžaduje funkčné úložisko.
+          </p>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              try {
+                await refresh();
+                setMessage("Fotografie boli načítané.");
+              } catch (error) {
+                setMessage(
+                  error instanceof Error && !(error instanceof TypeError)
+                    ? error.message
+                    : "Načítanie zlyhalo. Skúste znova.",
+                );
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            Skúsiť načítať fotografie znova
+          </button>
+        </div>
+      )}
       <input
         ref={input}
         type="file"
