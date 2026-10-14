@@ -20,6 +20,11 @@ export default async function BatchPage({
       <p className="muted">
         {r.name} · verzia {r.version}
       </p>
+      {r.freezing && (
+        <Link className="button" href={"/portioning?version=" + r.id}>
+          Rozporciovať várku do foriem — rôzne hmotnosti
+        </Link>
+      )}
       {r.freezing ? (
         <form action={cook} className="card">
           <input type="hidden" name="version_id" value={r.id} />
@@ -56,9 +61,7 @@ export default async function BatchPage({
             <input name="best_before" type="date" required />
           </label>
           <p className="muted">
-            Jedlo rýchlo schlaďte; ryžu ideálne do jednej hodiny. Mrazte
-            približne pri −18 °C. Dátum kvality nie je univerzálnou hranicou
-            bezpečnosti.
+            {r.storage} Dátum kvality nie je univerzálnou hranicou bezpečnosti.
           </p>
           <button>Vytvoriť várku a zásoby</button>
         </form>

@@ -79,6 +79,17 @@ export default async function RecipeDetail({
               </span>
             )}
           </div>
+          {r.category === "slow_roasted_pulled_meat" && (
+            <p>Pomaly pečené a trhané mäso</p>
+          )}
+          {r.cooking_minutes_min && (
+            <p>
+              Orientačné pečenie: {r.cooking_minutes_min}–
+              {r.cooking_minutes_max ?? r.cooking_minutes_min} min
+              {r.oven_c ? ` pri ${r.oven_c} °C` : ""}. Rozhoduje zmäknutie; pri
+              hydine aj vnútorná teplota 74 °C.
+            </p>
+          )}
           <div className="recipe-detail-actions">
             <Link
               className="button"
@@ -100,6 +111,9 @@ export default async function RecipeDetail({
             >
               <Pencil size={16} />
               Upraviť recept
+            </Link>
+            <Link className="text-link" href={"/portioning?version=" + r.id}>
+              Rozporciovať do kociek
             </Link>
             <Link
               className="text-link"

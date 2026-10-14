@@ -404,18 +404,16 @@ try {
     check(
       Boolean(
         (
-          await a
-            .from("recipe_photos")
-            .insert({
-              id: randomUUID(),
-              recipe_id: photoRoot,
-              user_id: own.data.user.id,
-              storage_path: foreignPath,
-              thumbnail_path: foreignPath,
-              position: 0,
-              alt: "Direct",
-              source_type: "own",
-            })
+          await a.from("recipe_photos").insert({
+            id: randomUUID(),
+            recipe_id: photoRoot,
+            user_id: own.data.user.id,
+            storage_path: foreignPath,
+            thumbnail_path: foreignPath,
+            position: 0,
+            alt: "Direct",
+            source_type: "own",
+          })
         ).error,
       ),
       "direct photo mutation denied",
@@ -498,3 +496,5 @@ try {
   }
   await sql.end();
 }
+
+await import("./test-cubes.mjs");

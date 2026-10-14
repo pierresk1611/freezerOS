@@ -51,6 +51,14 @@ export default async function Inventory({
               <p>
                 <strong>{p.remaining_g} g</strong> z {p.initial_g} g
               </p>
+              {p.cube_count && (
+                <p>
+                  {p.cube_count} kociek · {p.volume_ml} ml · {p.portions}{" "}
+                  pôvodných porcií · zostáva{" "}
+                  {((p.portions * p.remaining_g) / p.initial_g).toFixed(2)}{" "}
+                  porcií
+                </p>
+              )}
               <p className="muted">
                 {locations?.find((l) => l.id === p.location_id)?.name ??
                   "Bez umiestnenia"}

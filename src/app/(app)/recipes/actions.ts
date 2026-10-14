@@ -26,6 +26,12 @@ export async function saveRecipe(form: FormData): Promise<SaveResult> {
       message: "Skontrolujte označené polia.",
       fields: z.flattenError(parsed.error).fieldErrors,
     };
+  if (
+    parsed.data.cooking_minutes_min &&
+    parsed.data.cooking_minutes_max &&
+    parsed.data.cooking_minutes_min > parsed.data.cooking_minutes_max
+  )
+    return { message: "Začiatočný čas pečenia nemôže byť väčší než konečný." };
   const request = z.string().uuid().safeParse(form.get("request_id"));
   if (!request.success)
     return { message: "Platnosť formulára vypršala. Obnovte stránku." };

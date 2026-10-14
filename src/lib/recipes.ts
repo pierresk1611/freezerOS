@@ -25,16 +25,23 @@ export function recipeRecord(
   photos: RecipePhoto[] = [],
 ): RecipeRecord {
   return {
-    ...recipeSchema.parse(row),
+    ...recipeSchema.parse({
+      ...row,
+      ...(typeof row.metadata === "object" && row.metadata !== null
+        ? row.metadata
+        : {}),
+    }),
     id: String(row.id),
     recipe_id: String(row.recipe_id),
     version: Number(row.version),
     description:
       typeof row.description === "string" ? row.description : undefined,
-    prep_minutes:
-      typeof row.prep_minutes === "number" && row.prep_minutes > 0
-        ? row.prep_minutes
-        : undefined,
+    prep_minutes: recipeSchema.parse({
+      ...row,
+      ...(typeof row.metadata === "object" && row.metadata !== null
+        ? row.metadata
+        : {}),
+    }).prep_minutes,
     photos,
   };
 }

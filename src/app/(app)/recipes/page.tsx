@@ -25,6 +25,10 @@ export default async function Recipes({
     freezing?: string;
     error?: string;
     created?: string;
+    category?: string;
+    method?: string;
+    max_time?: string;
+    min_portions?: string;
   }>;
 }) {
   const params = await searchParams;
@@ -44,6 +48,15 @@ export default async function Recipes({
     (r) =>
       (!q || r.name.toLocaleLowerCase("sk").includes(q)) &&
       (!params.meat || r.meat === params.meat) &&
+      (!params.category || (r.category ?? "general") === params.category) &&
+      (!params.method ||
+        r.cooking_method === params.method ||
+        (params.method === "oven" && r.cooking_method === "slow_roast")) &&
+      (!params.max_time ||
+        (!!r.prep_minutes &&
+          !!r.cooking_minutes_max &&
+          r.prep_minutes + r.cooking_minutes_max <= Number(params.max_time))) &&
+      (!params.min_portions || r.portions >= Number(params.min_portions)) &&
       (!params.freezing ||
         (params.freezing === "yes" ? r.freezing : !r.freezing)),
   );
@@ -79,6 +92,17 @@ export default async function Recipes({
           Operácia sa nepodarila. Skontrolujte pripojenie a skúste znova.
         </p>
       )}
+      <div className="photo-actions">
+        <Link className="button button-secondary" href="/recipes/pulled">
+          Nové šablóny trhaného mäsa
+        </Link>
+        <Link href="/portioning" className="button button-secondary">
+          Formy a porciovanie
+        </Link>
+        <Link href="/preferences" className="text-link">
+          Moje chute
+        </Link>
+      </div>
       <form method="get" className="recipe-filters">
         <div className="recipe-search">
           <Search size={20} />
@@ -116,6 +140,53 @@ export default async function Recipes({
           <option value="yes">Vhodné na mrazenie</option>
           <option value="no">Nemraziť</option>
         </select>
+        <label>
+          Kategória
+          <select
+            aria-label="Kategória"
+            name="category"
+            defaultValue={params.category ?? ""}
+          >
+            <option value="">Všetky kategórie</option>
+            <option value="slow_roasted_pulled_meat">
+              Pomaly pečené a trhané mäso
+            </option>
+            <option value="general">Ostatné recepty</option>
+          </select>
+        </label>
+        <label>
+          Spôsob prípravy
+          <select
+            aria-label="Spôsob prípravy"
+            name="method"
+            defaultValue={params.method ?? ""}
+          >
+            <option value="">Všetky spôsoby</option>
+            <option value="oven">Rúra</option>
+            <option value="stove">Sporák</option>
+            <option value="slow_roast">Pomalé pečenie</option>
+          </select>
+        </label>
+        <label>
+          Celkový čas do (min)
+          <input
+            name="max_time"
+            type="number"
+            min={1}
+            max={4320}
+            defaultValue={params.max_time}
+          />
+        </label>
+        <label>
+          Minimálne porcie
+          <input
+            name="min_portions"
+            type="number"
+            min={1}
+            max={100}
+            defaultValue={params.min_portions}
+          />
+        </label>
         <button>
           <SlidersHorizontal size={17} />
           Filtrovať

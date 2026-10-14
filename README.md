@@ -94,3 +94,5 @@ Režim `/recipes/[recipe_id]/cook` zobrazuje veľké jednotlivé kroky. Dokonče
 E2E testy používajú samostatný port 3001 (možno zmeniť cez FREEZER_TEST_PORT), overujú celý receptový workflow aj skladový odpis pri šírkach 360, 390, 768, 1280 a 1440 px.
 
 Fotografie receptov: [aktivácia súkromného Storage, upload a licencie](docs/photos/README.md). Nová migrácia `202610140004_recipe_photos.sql` je potrebná aj pre už existujúce recepty; ID a kuchárske verzie zachováva.
+
+Trhané mäso a vákuové kocky: [aktivácia migrácie 005 a celý workflow](docs/pulled-cubes/README.md). Nové šablóny sa pridávajú výhradne potvrdením v `/recipes/pulled`, porciovanie nájdete v `/portioning`, mäkké preferencie v `/preferences` a základný plán v `/meal-plan`.

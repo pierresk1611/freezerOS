@@ -80,6 +80,16 @@ export function RecipeEditor({
       noValidate
       className="recipe-editor"
       onSubmit={handleSubmit(async (values) => {
+        if (
+          values.cooking_minutes_min &&
+          values.cooking_minutes_max &&
+          values.cooking_minutes_min > values.cooking_minutes_max
+        ) {
+          setResult({
+            message: "Začiatočný čas pečenia nemôže byť väčší než konečný.",
+          });
+          return;
+        }
         if (drafts.some((p) => !p.alt.trim())) {
           setResult({ message: "Doplňte alternatívny text fotografií." });
           return;
@@ -126,6 +136,60 @@ export function RecipeEditor({
         }
       })}
     >
+      <section className="card">
+        <h2>Spôsob prípravy a časy</h2>
+        <label>
+          Kategória
+          <select
+            {...register("category", { setValueAs: (v) => v || undefined })}
+          >
+            <option value="">Neurčená</option>
+            <option value="general">Všeobecná</option>
+            <option value="slow_roasted_pulled_meat">
+              Pomaly pečené a trhané mäso
+            </option>
+          </select>
+        </label>
+        <label>
+          Spôsob prípravy
+          <select
+            {...register("cooking_method", {
+              setValueAs: (v) => v || undefined,
+            })}
+          >
+            <option value="">Neurčený</option>
+            <option value="oven">Rúra</option>
+            <option value="stove">Sporák</option>
+            <option value="slow_roast">Pomalé pečenie</option>
+          </select>
+        </label>
+        {(
+          [
+            ["prep_minutes", "Čas prípravy (min)"],
+            ["cooking_minutes_min", "Pečenie od (min)"],
+            ["cooking_minutes_max", "Pečenie do (min)"],
+            ["oven_c", "Teplota rúry (°C)"],
+          ] as const
+        ).map(([key, label]) => (
+          <label key={key}>
+            {label}
+            <input
+              type="number"
+              min={key === "oven_c" ? 50 : 1}
+              max={
+                key === "oven_c" ? 300 : key === "prep_minutes" ? 1440 : 2880
+              }
+              {...register(key, {
+                setValueAs: (v) => (v === "" ? undefined : Number(v)),
+              })}
+            />
+            <FieldError
+              invalid={errors[key]}
+              text="Skontrolujte čas alebo teplotu."
+            />
+          </label>
+        ))}
+      </section>
       <PhotoManager
         recipeId={recipeId ?? savedRecipeId}
         initial={photos}

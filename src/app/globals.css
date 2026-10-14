@@ -1132,3 +1132,44 @@ textarea[aria-invalid="true"] {
 .photo-lightbox button {
   min-height: 44px;
 }
+.cube-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 18px;
+}
+.cube-grid .card {
+  margin: 0;
+}
+.mold-cells {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 14px 0;
+}
+.mold-cells span {
+  border: 2px solid #86ac96;
+  border-radius: 16px;
+  text-align: center;
+  padding: 22px 12px;
+  background: #96ba9b22;
+}
+.package-preview {
+  border-top: 1px solid #d0d7cf;
+  padding: 16px 0;
+}
+.cube-choice {
+  padding: 12px;
+  border: 1px solid #d0d7cf;
+  border-radius: 12px;
+}
+.mobile-account-extra {
+  display: none;
+}
+.recipe-filters label {
+  min-width: 0;
+}
+.recipe-filters label input,
+.recipe-filters label select {
+  width: 100%;
+  min-width: 0;
+}

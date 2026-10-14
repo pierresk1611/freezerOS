@@ -1,7 +1,6 @@
-import Image from "next/image";
 import { userDb } from "@/lib/supabase";
-import QRCode from "qrcode";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 export default async function Label({
   params,
 }: {
@@ -15,43 +14,33 @@ export default async function Label({
     .eq("id", id)
     .maybeSingle();
   if (error || !p) notFound();
-  const origin = process.env.NEXT_PUBLIC_APP_URL;
-  if (!origin)
-    return (
-      <div className="card">
-        <h1>QR štítok</h1>
-        <p>
-          Pre skenovateľný štítok nastavte NEXT_PUBLIC_APP_URL na HTTPS adresu
-          nasadenej aplikácie.
-        </p>
-      </div>
-    );
-  const qr = await QRCode.toDataURL(
-    new URL("/inventory?id=" + id, origin).toString(),
-  );
   return (
-    <div className="card">
-      <h1>FREEZER OS</h1>
+    <section className="card">
+      <h1>Štítok 50 × 30 mm</h1>
       <h2>{p.name}</h2>
       <p>
-        {p.remaining_g} g · {p.best_before}
+        {p.initial_g} g · {p.portions ?? "Neznámy počet"} porcií ·{" "}
+        {p.cube_count ?? "Neznámy počet"} kociek
       </p>
-      <Image
-        unoptimized
-        src={qr}
-        width={192}
-        height={192}
-        alt={"QR balíčka " + p.name}
-      />
       <p>
-        <a className="button" href={qr} download={"freezer-" + id + ".png"}>
-          Stiahnuť QR PNG
-        </a>
+        Kompletný štítok obsahuje ID, hmotnosť, porcie, dátum výroby a
+        zmrazenia, dátum kvality a QR. Pri starších záznamoch chýbajúce dátumy
+        nevymýšľame.
       </p>
-      <small>
-        Export obsahuje QR kód. Kompletné tlačové štítky a PDF budú ďalším
-        míľnikom.
-      </small>
-    </div>
+      <div className="photo-actions">
+        <a className="button" href={`/api/labels/${id}?format=png`}>
+          Stiahnuť štítok PNG
+        </a>
+        <a className="button" href={`/api/labels/${id}?format=pdf`}>
+          Stiahnuť štítok PDF
+        </a>
+      </div>
+      <p>
+        Export importujte do aplikácie NIIMBOT B1 a nastavte rozmer 50 × 30 mm.
+        Priama Bluetooth tlač nie je overená. PDF má presný fyzický rozmer;
+        tlačte pri 100 % bez prispôsobenia.
+      </p>
+      <Link href={"/inventory?id=" + id}>Späť na balíček</Link>
+    </section>
   );
 }

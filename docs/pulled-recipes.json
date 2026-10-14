@@ -1,0 +1,366 @@
+{
+  "schemaVersion": "1.0",
+  "importId": "d051c7eb-544e-489d-b3b0-5673ba638d79",
+  "importType": "recipes",
+  "source": "FREEZER OS – pulled meat templates",
+  "generatedAt": "2026-10-14T00:00:00Z",
+  "payload": [
+    {
+      "name": "Sticky Ginger Pulled Pork",
+      "portions": 6,
+      "ingredients": [
+        {
+          "name": "Bravčové pliecko",
+          "quantity": 1500,
+          "unit": "g"
+        },
+        {
+          "name": "Sójová omáčka",
+          "quantity": 90,
+          "unit": "ml"
+        },
+        {
+          "name": "Rybacia omáčka",
+          "quantity": 30,
+          "unit": "ml"
+        },
+        {
+          "name": "Med",
+          "quantity": 70,
+          "unit": "g"
+        },
+        {
+          "name": "Čerstvý zázvor",
+          "quantity": 60,
+          "unit": "g"
+        },
+        {
+          "name": "Cesnak",
+          "quantity": 30,
+          "unit": "g"
+        },
+        {
+          "name": "Cibuľa",
+          "quantity": 250,
+          "unit": "g"
+        },
+        {
+          "name": "Vývar",
+          "quantity": 350,
+          "unit": "ml"
+        },
+        {
+          "name": "Jablčný ocot",
+          "quantity": 40,
+          "unit": "ml"
+        },
+        {
+          "name": "Olej",
+          "quantity": 15,
+          "unit": "ml"
+        },
+        {
+          "name": "Jazmínová ryža (suchá, podávaná samostatne)",
+          "quantity": 450,
+          "unit": "g"
+        },
+        {
+          "name": "Kukurica, scedená",
+          "quantity": 400,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Rúru predhrejte na 150 °C (horný/dolný ohrev). Cibuľu nakrájajte, cesnak a zázvor nasekajte. Mäso osušte; prílohy zatiaľ nechajte oddelené.",
+        "Zmiešajte sójovú a rybaciu omáčku, med, ocot, vývar a olej. Pliecko vložte do nádoby, obložte cibuľou, cesnakom a zázvorom a zalejte.",
+        "Nádobu tesne zakryte pokrievkou alebo fóliou. Pečte pri 145–155 °C orientačne 4–5 hodín. Priebežne kontrolujte tekutinu; podľa potreby pridajte vodu, aby sa základ nepripálil.",
+        "Mäso musí byť prepečené a vidlička sa doň musí zasúvať bez výrazného odporu. Samotný čas nie je dôkazom hotového jedla; tuhé mäso pečte dlhšie pod pokrievkou.",
+        "Vyberte mäso. Zo šťavy odoberte podľa chuti časť tuku. Výpek krátko redukujte na sporáku; priebežne ochutnávajte, aby nebol príliš slaný.",
+        "Natrhajte mäso dvoma vidličkami, odstráňte veľké tuhé časti a premiešajte s primeraným množstvom šťavy.",
+        "Ryžu prepláchnite a uvarte podľa návodu konkrétneho balenia. Scedenú kukuricu krátko prehrejte; podávajte ako samostatné prílohy.",
+        "Odvážte skutočný výťažok mäsa so šťavou bez samostatných príloh. Rozdeľte ho do plytkých nádob na rýchle chladenie a po schladení naplňte formy; objem a hmotnosť merajte zvlášť."
+      ],
+      "meat": "pork",
+      "freezing": true,
+      "category": "slow_roasted_pulled_meat",
+      "cooking_method": "slow_roast",
+      "prep_minutes": 25,
+      "cooking_minutes_min": 240,
+      "cooking_minutes_max": 300,
+      "oven_c": 150,
+      "storage": "Hotové mäso so šťavou rýchlo schlaďte v plytkých menších nádobách a uložte do chladničky pri najviac 5 °C do dvoch hodín. Chladené jedlo spotrebujte do 48 hodín alebo ho včas zmrazte približne pri −18 °C. Do foriem dávajte až schladené mäso s primeraným množstvom šťavy; po úplnom zamrazení vyberte kocky a vákuujte. Zvoľte vlastný orientačný dátum zachovania kvality, nie univerzálny bezpečnostný limit. Ryžu chlaďte samostatne ideálne do jednej hodiny; chladenú ryžu spotrebujte do 24 hodín a ohrievajte najviac raz.",
+      "reheating": "Rozmrazujte v chladničke, nie na kuchynskej linke. Mäso so šťavou prehrejte prikryté v hrnci alebo mikrovlnnej rúre, podľa potreby pridajte trochu vody a premiešajte. Celá porcia vrátane stredu musí dosiahnuť aspoň 74 °C; overte čistým teplomerom. Ohrievajte iba množstvo určené na okamžitú konzumáciu, najviac raz. Ryžu a kukuricu prehrejte zvlášť, ryžu dôkladne aj v strede."
+    },
+    {
+      "name": "Trhané hovädzie na červenom víne",
+      "portions": 6,
+      "ingredients": [
+        {
+          "name": "Hovädzie predné",
+          "quantity": 1400,
+          "unit": "g"
+        },
+        {
+          "name": "Cibuľa",
+          "quantity": 300,
+          "unit": "g"
+        },
+        {
+          "name": "Cesnak",
+          "quantity": 25,
+          "unit": "g"
+        },
+        {
+          "name": "Mrkva",
+          "quantity": 250,
+          "unit": "g"
+        },
+        {
+          "name": "Hovädzí vývar",
+          "quantity": 500,
+          "unit": "ml"
+        },
+        {
+          "name": "Červené víno",
+          "quantity": 300,
+          "unit": "ml"
+        },
+        {
+          "name": "Paradajkový pretlak",
+          "quantity": 50,
+          "unit": "g"
+        },
+        {
+          "name": "Bobkový list",
+          "quantity": 2,
+          "unit": "ks"
+        },
+        {
+          "name": "Sušený tymián",
+          "quantity": 2,
+          "unit": "g"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 10,
+          "unit": "g"
+        },
+        {
+          "name": "Čierne korenie",
+          "quantity": 2,
+          "unit": "g"
+        },
+        {
+          "name": "Olej",
+          "quantity": 15,
+          "unit": "ml"
+        },
+        {
+          "name": "Zemiaky (na samostatnú kašu)",
+          "quantity": 1200,
+          "unit": "g"
+        },
+        {
+          "name": "Mlieko (do kaše)",
+          "quantity": 180,
+          "unit": "ml"
+        },
+        {
+          "name": "Maslo (do kaše)",
+          "quantity": 60,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Rúru predhrejte na 150 °C. Mäso osušte a nakrájajte na veľké kusy. Nakrájajte cibuľu a mrkvu, nasekajte cesnak.",
+        "V nádobe vhodnej aj do rúry rozohrejte olej a mäso po dávkach prudko opečte zo všetkých strán. Odložte bokom.",
+        "V tej istej nádobe orestujte cibuľu a mrkvu. Pridajte cesnak, pretlak a krátko opekajte bez spálenia.",
+        "Prilejte víno, uvoľnite prípečky a krátko povarte. Pridajte vývar, bobkový list, tymián, soľ a korenie. Vráťte mäso.",
+        "Zakryté pečte pri približne 150 °C orientačne 3,5–5 hodín. Kontrolujte hladinu tekutiny, podľa potreby doplňte vodu. Mäso musí byť tak mäkké, že sa ľahko rozpadá vidličkou.",
+        "Odstráňte bobkové listy. Mäso natrhajte, šťavu podľa potreby redukujte na sporáku a zmiešajte s mäsom.",
+        "Samostatne ošúpte a uvarte zemiaky v osolenej vode domäkka. Sceďte a roztlačte s teplým mliekom a maslom; mlieko pridávajte postupne podľa konzistencie.",
+        "Na porciovanie odvážte iba mäso so šťavou, ak kašu evidujete zvlášť. Obe zložky rýchlo schlaďte v plytkých nádobách; neponechávajte veľký horúci hrniec dlho na kuchynskej linke."
+      ],
+      "meat": "beef",
+      "freezing": true,
+      "category": "slow_roasted_pulled_meat",
+      "cooking_method": "slow_roast",
+      "prep_minutes": 35,
+      "cooking_minutes_min": 210,
+      "cooking_minutes_max": 300,
+      "oven_c": 150,
+      "storage": "Hotové mäso so šťavou rýchlo schlaďte v plytkých menších nádobách a uložte do chladničky pri najviac 5 °C do dvoch hodín. Chladené jedlo spotrebujte do 48 hodín alebo ho včas zmrazte približne pri −18 °C. Do foriem dávajte až schladené mäso s primeraným množstvom šťavy; po úplnom zamrazení vyberte kocky a vákuujte. Zvoľte vlastný orientačný dátum zachovania kvality, nie univerzálny bezpečnostný limit. Zemiakovú kašu chlaďte a mrazte samostatne; po rozmrazení sa môže zmeniť konzistencia.",
+      "reheating": "Rozmrazujte v chladničke, nie na kuchynskej linke. Mäso so šťavou prehrejte prikryté v hrnci alebo mikrovlnnej rúre, podľa potreby pridajte trochu vody a premiešajte. Celá porcia vrátane stredu musí dosiahnuť aspoň 74 °C; overte čistým teplomerom. Ohrievajte iba množstvo určené na okamžitú konzumáciu, najviac raz. Kašu prehrejte zvlášť s malým množstvom mlieka alebo vody a premiešajte do rovnomerne horúcej konzistencie."
+    },
+    {
+      "name": "Mexické Carnitas s kukuricou",
+      "portions": 6,
+      "ingredients": [
+        {
+          "name": "Bravčové pliecko",
+          "quantity": 1500,
+          "unit": "g"
+        },
+        {
+          "name": "Pomarančová šťava",
+          "quantity": 250,
+          "unit": "ml"
+        },
+        {
+          "name": "Cesnak",
+          "quantity": 30,
+          "unit": "g"
+        },
+        {
+          "name": "Cibuľa",
+          "quantity": 250,
+          "unit": "g"
+        },
+        {
+          "name": "Rímska rasca",
+          "quantity": 5,
+          "unit": "g"
+        },
+        {
+          "name": "Údená paprika",
+          "quantity": 6,
+          "unit": "g"
+        },
+        {
+          "name": "Oregano",
+          "quantity": 3,
+          "unit": "g"
+        },
+        {
+          "name": "Jemné chilli",
+          "quantity": 1,
+          "unit": "g"
+        },
+        {
+          "name": "Vývar",
+          "quantity": 250,
+          "unit": "ml"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 10,
+          "unit": "g"
+        },
+        {
+          "name": "Kukurica, scedená",
+          "quantity": 450,
+          "unit": "g"
+        },
+        {
+          "name": "Jazmínová ryža (suchá, podávaná samostatne)",
+          "quantity": 450,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Rúru predhrejte na 150 °C. Pliecko nakrájajte na veľké kusy; cibuľu a cesnak nasekajte.",
+        "Do nádoby vložte mäso, cibuľu, cesnak, pomarančovú šťavu, vývar, rascu, papriku, oregano, jemné chilli a soľ. Premiešajte a tesne zakryte.",
+        "Pomaly pečte pri približne 150 °C orientačne 3–4,5 hodiny. Kontrolujte šťavu a podľa potreby doplňte vodu. Pokračujte, kým je mäso prepečené a ľahko trhateľné.",
+        "Mäso natrhajte vidličkami a premiešajte s výpekom. Na mrazenie odložte šťavnatú časť pred finálnym zapečením.",
+        "Len porciu určenú na okamžité podávanie môžete krátko zapiecť na plechu pri 220 °C pre chrumkavé okraje. Sledujte ju, aby sa nevysušila alebo nepripálila.",
+        "Ryžu prepláchnite a uvarte podľa balenia. Kukuricu sceďte, krátko prehrejte a podávajte s ryžou vedľa mäsa.",
+        "Odvážte skutočné množstvo mäsa so šťavou, rýchlo schlaďte v menších plytkých nádobách a porcujte do foriem. Ryžu a kukuricu evidujte zvlášť, ak netvoria spoločný balíček."
+      ],
+      "meat": "pork",
+      "freezing": true,
+      "category": "slow_roasted_pulled_meat",
+      "cooking_method": "slow_roast",
+      "prep_minutes": 20,
+      "cooking_minutes_min": 180,
+      "cooking_minutes_max": 270,
+      "oven_c": 150,
+      "storage": "Hotové mäso so šťavou rýchlo schlaďte v plytkých menších nádobách a uložte do chladničky pri najviac 5 °C do dvoch hodín. Chladené jedlo spotrebujte do 48 hodín alebo ho včas zmrazte približne pri −18 °C. Do foriem dávajte až schladené mäso s primeraným množstvom šťavy; po úplnom zamrazení vyberte kocky a vákuujte. Zvoľte vlastný orientačný dátum zachovania kvality, nie univerzálny bezpečnostný limit. Ryžu chlaďte samostatne ideálne do jednej hodiny; chladenú ryžu spotrebujte do 24 hodín a ohrievajte najviac raz.",
+      "reheating": "Rozmrazujte v chladničke, nie na kuchynskej linke. Mäso so šťavou prehrejte prikryté v hrnci alebo mikrovlnnej rúre, podľa potreby pridajte trochu vody a premiešajte. Celá porcia vrátane stredu musí dosiahnuť aspoň 74 °C; overte čistým teplomerom. Ohrievajte iba množstvo určené na okamžitú konzumáciu, najviac raz. Ryžu a kukuricu prehrejte zvlášť, ryžu dôkladne aj v strede."
+    },
+    {
+      "name": "BBQ Pulled Chicken",
+      "portions": 6,
+      "ingredients": [
+        {
+          "name": "Kuracie stehenné rezne bez kosti",
+          "quantity": 1200,
+          "unit": "g"
+        },
+        {
+          "name": "Passata",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "Údená paprika",
+          "quantity": 6,
+          "unit": "g"
+        },
+        {
+          "name": "Med",
+          "quantity": 50,
+          "unit": "g"
+        },
+        {
+          "name": "Cesnak",
+          "quantity": 25,
+          "unit": "g"
+        },
+        {
+          "name": "Cibuľa",
+          "quantity": 200,
+          "unit": "g"
+        },
+        {
+          "name": "Jablčný ocot",
+          "quantity": 30,
+          "unit": "ml"
+        },
+        {
+          "name": "Worcesterská omáčka",
+          "quantity": 30,
+          "unit": "ml"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 7,
+          "unit": "g"
+        },
+        {
+          "name": "Čierne korenie",
+          "quantity": 2,
+          "unit": "g"
+        },
+        {
+          "name": "Kukurica, scedená",
+          "quantity": 400,
+          "unit": "g"
+        },
+        {
+          "name": "Jazmínová ryža (suchá, podávaná samostatne)",
+          "quantity": 400,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Rúru predhrejte na 160 °C. Nakrájajte cibuľu a nasekajte cesnak; surové kuracie mäso neumývajte a používajte samostatnú čistú dosku.",
+        "Zmiešajte passatu, údenú papriku, med, cesnak, cibuľu, ocot, Worcesterskú omáčku, soľ a korenie. Mäso vložte do nádoby a zalejte omáčkou.",
+        "Zakryté pečte pri približne 160 °C orientačne 1,5–2 hodiny. Kontrolujte tekutinu a pri hustnutí pridajte malé množstvo vody.",
+        "Čistým teplomerom overte najhrubšie časti: kuracie mäso musí dosiahnuť aspoň 74 °C. Zároveň musí byť mäkké na trhanie; čas alebo farba samy nestačia.",
+        "Mäso natrhajte vidličkami a premiešajte s omáčkou. Ak je omáčka riedka, krátko ju samostatne zredukujte a vráťte k mäsu.",
+        "Ryžu uvarte podľa balenia a kukuricu krátko prehrejte. Ako alternatívu môžete použiť samostatne pripravenú a evidovanú zemiakovú kašu.",
+        "Odvážte výťažok mäsa s omáčkou bez príloh. Rozdeľte do plytkých nádob, rýchlo schlaďte a po schladení naplňte formy; zmerajte skutočnú hmotnosť a objem každej kocky."
+      ],
+      "meat": "chicken",
+      "freezing": true,
+      "category": "slow_roasted_pulled_meat",
+      "cooking_method": "slow_roast",
+      "prep_minutes": 20,
+      "cooking_minutes_min": 90,
+      "cooking_minutes_max": 120,
+      "oven_c": 160,
+      "storage": "Hotové mäso so šťavou rýchlo schlaďte v plytkých menších nádobách a uložte do chladničky pri najviac 5 °C do dvoch hodín. Chladené jedlo spotrebujte do 48 hodín alebo ho včas zmrazte približne pri −18 °C. Do foriem dávajte až schladené mäso s primeraným množstvom šťavy; po úplnom zamrazení vyberte kocky a vákuujte. Zvoľte vlastný orientačný dátum zachovania kvality, nie univerzálny bezpečnostný limit. Ryžu chlaďte samostatne ideálne do jednej hodiny; chladenú ryžu spotrebujte do 24 hodín a ohrievajte najviac raz.",
+      "reheating": "Rozmrazujte v chladničke, nie na kuchynskej linke. Mäso so šťavou prehrejte prikryté v hrnci alebo mikrovlnnej rúre, podľa potreby pridajte trochu vody a premiešajte. Celá porcia vrátane stredu musí dosiahnuť aspoň 74 °C; overte čistým teplomerom. Ohrievajte iba množstvo určené na okamžitú konzumáciu, najviac raz. Ryžu a kukuricu prehrejte zvlášť, ryžu dôkladne aj v strede."
+    }
+  ]
+}
