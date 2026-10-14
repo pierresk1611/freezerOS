@@ -1,4 +1,7 @@
 "use client";
+import { PhotoManager, uploadPhoto, type DraftPhoto } from "./photo-manager";
+import type { RecipePhoto } from "@/lib/recipe-photos";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -31,15 +34,22 @@ function FieldError({ invalid, text }: { invalid: unknown; text: string }) {
 }
 export function RecipeEditor({
   requestId,
+  recipeId,
+  photos,
   initial,
   versionId,
   cancelHref = "/recipes",
 }: {
+  recipeId?: string;
+  photos?: RecipePhoto[];
   requestId: string;
   initial?: z.infer<typeof recipeSchema>;
   versionId?: string;
   cancelHref?: string;
 }) {
+  const router = useRouter();
+  const [drafts, setDrafts] = useState<DraftPhoto[]>([]);
+  const [savedRecipeId, setSavedRecipeId] = useState<string>();
   const [pending, setPending] = useState(false);
   const [result, setResult] = useState<SaveResult>({});
   const {
@@ -70,10 +80,15 @@ export function RecipeEditor({
       noValidate
       className="recipe-editor"
       onSubmit={handleSubmit(async (values) => {
+        if (drafts.some((p) => !p.alt.trim())) {
+          setResult({ message: "Doplňte alternatívny text fotografií." });
+          return;
+        }
         setPending(true);
         setResult({});
         const form = new FormData();
         form.set("request_id", requestId);
+        form.set("has_photos", drafts.length ? "true" : "false");
         form.set(
           "payload",
           JSON.stringify({ ...values, steps: values.steps.map((s) => s.text) }),
@@ -81,7 +96,26 @@ export function RecipeEditor({
         if (versionId) form.set("version_id", versionId);
         try {
           const response = await saveRecipe(form);
-          if (response) setResult(response);
+          if (response.destination && !response.recipeId) {
+            router.push(response.destination);
+            router.refresh();
+            return;
+          }
+          if (response.destination && response.recipeId) {
+            setSavedRecipeId(response.recipeId);
+            try {
+              for (const photo of drafts)
+                await uploadPhoto(response.recipeId, photo.file, photo.alt);
+            } catch (error) {
+              setDrafts([]);
+              setResult({
+                message: `Recept bol uložený, ale fotografia sa nenahrala: ${error instanceof Error ? error.message : "Skúste znova."}`,
+              });
+              return;
+            }
+            router.push(response.destination);
+            router.refresh();
+          } else setResult(response);
         } catch {
           setResult({
             message:
@@ -92,6 +126,19 @@ export function RecipeEditor({
         }
       })}
     >
+      <PhotoManager
+        recipeId={recipeId ?? savedRecipeId}
+        initial={photos}
+        onDrafts={setDrafts}
+      />
+      {savedRecipeId && (
+        <p role="status">
+          Recept je uložený.{" "}
+          <Link href={`/recipes/${savedRecipeId}/edit`}>
+            Otvoriť uložený recept a doplniť fotografie
+          </Link>
+        </p>
+      )}
       <section className="editor-section">
         <div className="eyebrow">01 · ZÁKLAD RECEPTU</div>
         <h2>Dajte jedlu meno</h2>

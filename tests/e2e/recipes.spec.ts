@@ -12,11 +12,15 @@ async function login(page: Page) {
   ).toBeVisible();
 }
 async function noOverflow(page: Page) {
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= window.innerWidth,
-    ),
-  ).toBe(true);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          !!document.documentElement &&
+          document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    )
+    .toBe(true);
 }
 test("galéria, samostatný editor, verzia, cooking mode, duplikácia a archív", async ({
   page,

@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import pg from "pg";
+import sharp from "sharp";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { localConfig } from "./local-env.mjs";
@@ -236,6 +237,259 @@ try {
     p_recipes: [recipe],
   });
   check(Boolean(result.error), "anonymous RPC denied");
+  // Photos are independent of versions; private storage and RPCs enforce ownership.
+  const photoRoot = randomUUID();
+  result = await a.rpc("create_recipe_with_id", {
+    p_id: photoRoot,
+    p_recipe: recipe,
+  });
+  check(!result.error, "create stable root for photos");
+  result = await a.rpc("create_recipe_with_id", {
+    p_id: photoRoot,
+    p_recipe: recipe,
+  });
+  check(!result.error, "idempotent editor creation");
+  const own = await a.auth.getUser();
+  const bytes = await sharp({
+    create: { width: 32, height: 32, channels: 3, background: "#a45232" },
+  })
+    .webp()
+    .toBuffer();
+  const photoIds = [randomUUID(), randomUUID()];
+  const paths = [];
+  for (const id of photoIds) {
+    const base = `${own.data.user.id}/${photoRoot}/${id}/`;
+    for (const suffix of ["large.webp", "thumb.webp"]) {
+      const path = base + suffix;
+      paths.push(path);
+      const upload = await a.storage
+        .from("recipe-photos")
+        .upload(path, bytes, { contentType: "image/webp" });
+      check(!upload.error, "private photo upload");
+    }
+    result = await a.rpc("add_recipe_photo", {
+      p_recipe: photoRoot,
+      p_id: id,
+      p_alt: "Jedlo",
+    });
+    check(!result.error, "attach uploaded photo");
+  }
+  try {
+    const photos = await a
+      .from("recipe_photos")
+      .select("*")
+      .eq("recipe_id", photoRoot);
+    check(photos.data.length === 2, "owner loads real photo records");
+    check(
+      (await b.from("recipe_photos").select("*").eq("recipe_id", photoRoot))
+        .data.length === 0,
+      "photo RLS isolates users",
+    );
+    check(
+      Boolean(
+        (await b.storage.from("recipe-photos").createSignedUrl(paths[0], 60))
+          .error,
+      ),
+      "foreign signed URL denied",
+    );
+    check(
+      Boolean(
+        (await anon.storage.from("recipe-photos").createSignedUrl(paths[0], 60))
+          .error,
+      ),
+      "anonymous private access denied",
+    );
+    const signed = await a.storage
+      .from("recipe-photos")
+      .createSignedUrl(paths[0], 60);
+    check(
+      !signed.error && (await fetch(signed.data.signedUrl)).ok,
+      "owner signed photo is readable",
+    );
+    check(
+      !(
+        await fetch(
+          config.API_URL +
+            "/storage/v1/object/public/recipe-photos/" +
+            paths[0],
+        )
+      ).ok,
+      "bucket never public",
+    );
+    check(
+      Boolean(
+        (
+          await b.rpc("add_recipe_photo", {
+            p_recipe: photoRoot,
+            p_id: randomUUID(),
+            p_alt: "Foreign",
+          })
+        ).error,
+      ),
+      "foreign recipe attachment rejected",
+    );
+    check(
+      Boolean(
+        (
+          await a.rpc("add_recipe_photo", {
+            p_recipe: photoRoot,
+            p_id: randomUUID(),
+            p_alt: "Missing",
+          })
+        ).error,
+      ),
+      "missing image rejected",
+    );
+    result = await a.rpc("save_recipe_photos", {
+      p_recipe: photoRoot,
+      p_revision: 2,
+      p_photos: [
+        { id: photoIds[1], alt: "Hlavný záber" },
+        { id: photoIds[0], alt: "Ďalší záber" },
+      ],
+    });
+    check(!result.error, "atomic reorder and main photo");
+    const main = await a
+      .from("recipe_photos")
+      .select("*")
+      .eq("recipe_id", photoRoot)
+      .order("position");
+    check(
+      main.data[0].id === photoIds[1] &&
+        main.data[0].is_primary &&
+        !main.data[1].is_primary,
+      "exactly one selected cover",
+    );
+    check(
+      Boolean(
+        (
+          await a.rpc("save_recipe_photos", {
+            p_recipe: photoRoot,
+            p_revision: 2,
+            p_photos: [],
+          })
+        ).error,
+      ),
+      "stale photo update cannot delete newer data",
+    );
+    check(
+      Boolean(
+        (
+          await a.rpc("save_recipe_photos", {
+            p_recipe: photoRoot,
+            p_revision: null,
+            p_photos: [],
+          })
+        ).error,
+      ),
+      "missing concurrency revision rejected",
+    );
+    result = await a.rpc("save_recipe_photos", {
+      p_recipe: photoRoot,
+      p_revision: 3,
+      p_photos: [{ id: photoIds[0], alt: "Zostávajúca fotografia" }],
+    });
+    check(!result.error, "photo removal promotes remaining cover");
+    const foreignPath = paths[0].replace(photoIds[0], randomUUID());
+    check(
+      Boolean(
+        (
+          await b.storage
+            .from("recipe-photos")
+            .upload(foreignPath, bytes, { contentType: "image/webp" })
+        ).error,
+      ),
+      "foreign storage upload denied",
+    );
+    check(
+      Boolean(
+        (
+          await a
+            .from("recipe_photos")
+            .insert({
+              id: randomUUID(),
+              recipe_id: photoRoot,
+              user_id: own.data.user.id,
+              storage_path: foreignPath,
+              thumbnail_path: foreignPath,
+              position: 0,
+              alt: "Direct",
+              source_type: "own",
+            })
+        ).error,
+      ),
+      "direct photo mutation denied",
+    );
+    for (let i = 0; i < 7; i++) {
+      const id = randomUUID(),
+        base = `${own.data.user.id}/${photoRoot}/${id}/`;
+      for (const suffix of ["large.webp", "thumb.webp"]) {
+        const path = base + suffix;
+        paths.push(path);
+        const upload = await a.storage
+          .from("recipe-photos")
+          .upload(path, bytes, { contentType: "image/webp" });
+        assert.ok(!upload.error);
+      }
+      const added = await a.rpc("add_recipe_photo", {
+        p_recipe: photoRoot,
+        p_id: id,
+        p_alt: "Ďalší záber",
+      });
+      assert.ok(!added.error);
+    }
+    check(
+      Boolean(
+        (
+          await a.rpc("add_recipe_photo", {
+            p_recipe: photoRoot,
+            p_id: randomUUID(),
+            p_alt: "Deviata",
+          })
+        ).error,
+      ),
+      "database enforces eight-photo limit",
+    );
+    const unchanged = await a
+      .from("recipe_versions")
+      .select("*")
+      .eq("recipe_id", photoRoot);
+    check(
+      unchanged.data.length === 1 &&
+        unchanged.data[0].version === 1 &&
+        unchanged.data[0].name === recipe.name,
+      "photo edits preserve culinary versions",
+    );
+    const importedId = randomUUID();
+    result = await a.rpc("import_recipes", {
+      p_import_id: importedId,
+      p_recipes: [
+        {
+          ...recipe,
+          imageReferences: [
+            {
+              sourceUrl: "https://example.org/photo",
+              author: "Autor",
+              license: "CC BY 4.0",
+              alt: "Ilustrácia",
+            },
+          ],
+        },
+      ],
+    });
+    check(!result.error, "optional image reference import");
+    const pending = await a.from("recipe_image_references").select("*");
+    check(
+      pending.data.length === 1 && pending.data[0].status === "pending",
+      "references kept pending without network fetching",
+    );
+    check(
+      (await b.from("recipe_image_references").select("*")).data.length === 0,
+      "reference RLS isolates users",
+    );
+  } finally {
+    await a.storage.from("recipe-photos").remove(paths);
+  }
   console.log(`${checks} database integration checks passed.`);
 } finally {
   for (const id of users) {

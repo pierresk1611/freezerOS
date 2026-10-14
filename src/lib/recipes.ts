@@ -2,7 +2,8 @@ import { userDb } from "./supabase";
 import { recipeSchema } from "./domain";
 import { z } from "zod";
 import { notFound } from "next/navigation";
-export type RecipePhoto = { id: string; url: string; alt: string };
+import { loadRecipePhotos, type RecipePhoto } from "./recipe-photos";
+export type { RecipePhoto } from "./recipe-photos";
 export type RecipeRecord = z.infer<typeof recipeSchema> & {
   id: string;
   recipe_id: string;
@@ -19,7 +20,10 @@ export const meatLabels: Record<string, string> = {
   other: "Ostatné mäso",
   fish: "Ryba",
 };
-export function recipeRecord(row: Record<string, unknown>): RecipeRecord {
+export function recipeRecord(
+  row: Record<string, unknown>,
+  photos: RecipePhoto[] = [],
+): RecipeRecord {
   return {
     ...recipeSchema.parse(row),
     id: String(row.id),
@@ -31,7 +35,7 @@ export function recipeRecord(row: Record<string, unknown>): RecipeRecord {
       typeof row.prep_minutes === "number" && row.prep_minutes > 0
         ? row.prep_minutes
         : undefined,
-    photos: [],
+    photos,
   };
 }
 export async function loadRecipe(id: string) {
@@ -52,5 +56,6 @@ export async function loadRecipe(id: string) {
     if (result.error) throw result.error;
   }
   if (!result.data) notFound();
-  return recipeRecord(result.data);
+  const photos = await loadRecipePhotos(client, [result.data.recipe_id]);
+  return recipeRecord(result.data, photos.get(result.data.recipe_id));
 }

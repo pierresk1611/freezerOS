@@ -92,3 +92,5 @@ Režim `/recipes/[recipe_id]/cook` zobrazuje veľké jednotlivé kroky. Dokonče
 `RecipeMedia` prijíma zoznam `RecipePhoto` so signed URL, aby bolo možné v budúcnosti napojiť privátne fotografie zo Storage. Aktuálny dátový adaptér nevracia fotografie, ktoré nie sú uložené; používa označený neutrálny placeholder. Nahrávanie fotografií nie je súčasťou tohto redesignu. Databázová schéma ani RLS sa nemenia.
 
 E2E testy používajú samostatný port 3001 (možno zmeniť cez FREEZER_TEST_PORT), overujú celý receptový workflow aj skladový odpis pri šírkach 360, 390, 768, 1280 a 1440 px.
+
+Fotografie receptov: [aktivácia súkromného Storage, upload a licencie](docs/photos/README.md). Nová migrácia `202610140004_recipe_photos.sql` je potrebná aj pre už existujúce recepty; ID a kuchárske verzie zachováva.

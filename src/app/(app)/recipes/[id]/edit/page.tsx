@@ -23,6 +23,8 @@ export default async function EditRecipe({
         pôvodné údaje.
       </p>
       <RecipeEditor
+        recipeId={r.recipe_id}
+        photos={r.photos}
         requestId={randomUUID()}
         initial={recipeSchema.parse(r)}
         versionId={r.id}

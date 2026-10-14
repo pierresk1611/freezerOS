@@ -30,20 +30,41 @@ try {
     p_recipes: corrections.items.map((item) => item.before),
   });
   if (imported.error) throw new Error("Legacy recipe fixture import failed");
-  const result = spawnSync("node_modules/.bin/playwright", ["test"], {
-    stdio: "inherit",
-    env: {
-      ...process.env,
-      NEXT_PUBLIC_SUPABASE_URL: config.API_URL,
-      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: config.ANON_KEY,
-      FREEZER_TEST_API_URL: config.API_URL,
-      FREEZER_TEST_ANON_KEY: config.ANON_KEY,
-      FREEZER_TEST_EMAIL: email,
-      FREEZER_TEST_PASSWORD: password,
+  const result = spawnSync(
+    "node_modules/.bin/playwright",
+    ["test", ...process.argv.slice(2)],
+    {
+      stdio: "inherit",
+      env: {
+        ...process.env,
+        NEXT_PUBLIC_SUPABASE_URL: config.API_URL,
+        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: config.ANON_KEY,
+        FREEZER_TEST_API_URL: config.API_URL,
+        FREEZER_TEST_ANON_KEY: config.ANON_KEY,
+        FREEZER_TEST_EMAIL: email,
+        FREEZER_TEST_PASSWORD: password,
+      },
     },
-  });
+  );
   process.exitCode = result.status ?? 1;
 } finally {
+  async function removeFixtureFiles(prefix) {
+    const listing = await admin.storage
+      .from("recipe-photos")
+      .list(prefix, { limit: 1000 });
+    if (listing.error) throw listing.error;
+    for (const item of listing.data ?? []) {
+      const path = prefix + "/" + item.name;
+      if (!item.id) await removeFixtureFiles(path);
+      else {
+        const removed = await admin.storage
+          .from("recipe-photos")
+          .remove([path]);
+        if (removed.error) throw removed.error;
+      }
+    }
+  }
+  await removeFixtureFiles(data.user.id);
   const result = await admin.auth.admin.deleteUser(data.user.id);
   if (result.error) throw result.error;
 }

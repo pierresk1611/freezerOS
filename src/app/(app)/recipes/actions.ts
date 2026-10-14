@@ -3,8 +3,10 @@ import { userDb } from "@/lib/supabase";
 import { recipeSchema } from "@/lib/domain";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+
 export type SaveResult = {
+  destination?: string;
+  recipeId?: string;
   message?: string;
   fields?: Record<string, string[]>;
 };
@@ -29,6 +31,7 @@ export async function saveRecipe(form: FormData): Promise<SaveResult> {
     return { message: "Platnosť formulára vypršala. Obnovte stránku." };
   const version = form.get("version_id");
   let destination = "/recipes?created=1";
+  let recipeId: string | undefined = request.data;
   if (version) {
     const valid = z.string().uuid().safeParse(version);
     if (!valid.success) return { message: "Neplatná verzia receptu." };
@@ -50,18 +53,32 @@ export async function saveRecipe(form: FormData): Promise<SaveResult> {
           ? "Recept medzitým upravil iný používateľ alebo karta. Otvorte aktuálnu verziu; vaše úpravy zatiaľ zostávajú v tomto formulári."
           : "Uloženie sa nepodarilo. Vaše úpravy zostávajú vo formulári; skontrolujte pripojenie a skúste znova.",
       };
+    recipeId = source.recipe_id;
     destination = "/recipes/" + source.recipe_id + "?saved=1";
   } else {
-    const result = await client.rpc("import_recipes", {
-      p_import_id: request.data,
-      p_recipes: [parsed.data],
+    const result = await client.rpc("create_recipe_with_id", {
+      p_id: request.data,
+      p_recipe: parsed.data,
     });
-    if (result.error)
+    if (result.error?.code === "PGRST202") {
+      if (form.get("has_photos") === "true")
+        return {
+          message:
+            "Najprv aktivujte SQL migráciu fotografií. Recept ani fotografie ešte neboli uložené.",
+        };
+      const legacy = await client.rpc("import_recipes", {
+        p_import_id: request.data,
+        p_recipes: [parsed.data],
+      });
+      if (legacy.error)
+        return { message: "Uloženie sa nepodarilo. Skúste znova." };
+      recipeId = undefined;
+    } else if (result.error)
       return {
         message:
           "Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste znova.",
       };
   }
   revalidatePath("/", "layout");
-  redirect(destination);
+  return { destination, recipeId };
 }

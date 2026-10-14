@@ -32,12 +32,24 @@ export default async function RecipeDetail({
     .limit(1)
     .maybeSingle();
   if (batchError) throw batchError;
+  const { data: references, error: referenceError } = await client
+    .from("recipe_image_references")
+    .select("id,reference")
+    .eq("recipe_id", r.recipe_id)
+    .eq("status", "pending");
+  if (referenceError && !["PGRST205", "42P01"].includes(referenceError.code))
+    throw referenceError;
   return (
     <div className="recipe-page recipe-detail">
       <Link href="/recipes" className="back-link">
         <ArrowLeft size={18} />
         Späť do kuchárky
       </Link>
+      {referenceError && (
+        <p role="status" className="recipe-notice">
+          Fotografie čakajú na aktiváciu databázovej migrácie.
+        </p>
+      )}
       {saved && (
         <p role="status" className="recipe-notice">
           Nová verzia receptu bola uložená. Historické várky sa nemenia.
@@ -99,6 +111,12 @@ export default async function RecipeDetail({
           </div>
         </div>
       </div>
+      <Link
+        href={"/recipes/" + r.recipe_id + "/edit#photos"}
+        className="text-link"
+      >
+        Upraviť fotografie
+      </Link>
       <div className="recipe-detail-content">
         <aside className="recipe-ingredients">
           <div className="eyebrow">VŠETKO, ČO POTREBUJETE</div>
@@ -143,6 +161,34 @@ export default async function RecipeDetail({
           <p>{r.reheating}</p>
         </section>
       </div>
+      {!!references?.length && (
+        <section className="card">
+          <h2>Obrazové referencie z importu</h2>
+          <p>
+            Čakajú na overenie obsahu a licencie. Aplikácia ich automaticky
+            nesťahuje.
+          </p>
+          <ul>
+            {references.map((ref) => (
+              <li key={ref.id}>
+                <a
+                  href={ref.reference.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {ref.reference.alt}
+                </a>{" "}
+                · {ref.reference.author} · {ref.reference.license}
+              </li>
+            ))}
+          </ul>
+          <p>
+            Po overení práv môžete fotografiu nahrať do editora. Označenie
+            externého zdroja musí byť zachované; bežný upload je určený vašim
+            vlastným záberom.
+          </p>
+        </section>
+      )}
       <section className="recipe-data-note">
         <h2>Výživa a Food Cost</h2>
         <p className="muted">

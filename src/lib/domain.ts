@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { imageReferenceSchema } from "./photo-rules";
 export const ingredientSchema = z.object({
   name: z.string().trim().min(1).max(120),
   quantity: z.number().positive().max(1000000),
@@ -27,7 +28,14 @@ export const importSchema = z.object({
   importType: z.literal("recipes"),
   source: z.string().min(1).max(100),
   generatedAt: z.string().datetime(),
-  payload: z.array(recipeSchema).min(1).max(50),
+  payload: z
+    .array(
+      recipeSchema.extend({
+        imageReferences: z.array(imageReferenceSchema).max(8).optional(),
+      }),
+    )
+    .min(1)
+    .max(50),
 });
 export function nutrition(
   items: { grams: number; kcalPer100g: number | null }[],

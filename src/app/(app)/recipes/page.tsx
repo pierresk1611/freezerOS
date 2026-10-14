@@ -12,6 +12,7 @@ import {
 import { randomUUID } from "node:crypto";
 import { userDb } from "@/lib/supabase";
 import { recipeRecord, meatLabels } from "@/lib/recipes";
+import { loadRecipePhotos } from "@/lib/recipe-photos";
 import { RecipeMedia } from "./media";
 import { RecipeMenu } from "./menu";
 import { importDefaults } from "../actions";
@@ -33,7 +34,11 @@ export default async function Recipes({
     .select("*")
     .order("created_at", { ascending: false });
   if (error) throw error;
-  const all = (data ?? []).map(recipeRecord);
+  const photos = await loadRecipePhotos(
+    client,
+    (data ?? []).map((r) => r.recipe_id),
+  );
+  const all = (data ?? []).map((r) => recipeRecord(r, photos.get(r.recipe_id)));
   const q = (params.q ?? "").trim().toLocaleLowerCase("sk");
   const recipes = all.filter(
     (r) =>
@@ -58,6 +63,12 @@ export default async function Recipes({
           Nový recept
         </Link>
       </header>
+      {photos.needsMigration && (
+        <p role="status" className="recipe-notice">
+          Fotografie čakajú na aktiváciu databázovej migrácie. Existujúce
+          recepty zostávajú dostupné.
+        </p>
+      )}
       {params.created && (
         <p role="status" className="recipe-notice">
           Recept bol uložený do vašej kuchárky.

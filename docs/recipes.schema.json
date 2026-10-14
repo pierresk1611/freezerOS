@@ -112,6 +112,41 @@
           "freezing": {
             "default": true,
             "type": "boolean"
+          },
+          "imageReferences": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https://"
+                },
+                "alt": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 300
+                },
+                "author": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "license": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 300
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "alt",
+                "author",
+                "license"
+              ]
+            }
           }
         },
         "required": [
