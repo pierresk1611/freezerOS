@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requestTime } from "@/lib/time";
 import { userDb } from "@/lib/supabase";
 import { recommend, money, remainingValue } from "@/lib/domain";
@@ -36,9 +37,9 @@ export default async function Surprise() {
             Výživové hodnoty: neznáme. Základný výber zohľadňuje dátum a
             opakovanie; osobné pravidlá zatiaľ nie sú implementované.
           </p>
-          <a className="button" href={"/inventory?id=" + result.item.id}>
+          <Link className="button" href={"/inventory?id=" + result.item.id}>
             Toto si dám — vybrať množstvo
-          </a>
+          </Link>
           <p>
             <small>Odporúčanie samo o sebe neodpisuje zásoby.</small>
           </p>
@@ -47,9 +48,9 @@ export default async function Surprise() {
         <div className="card">
           <h2>Zatiaľ nie je z čoho vyberať</h2>
           <p>Najprv pridajte uvarenú várku do mrazničky.</p>
-          <a className="button" href="/recipes">
+          <Link className="button" href="/recipes">
             Otvoriť recepty
-          </a>
+          </Link>
         </div>
       )}
     </div>

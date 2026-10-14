@@ -1,168 +1,198 @@
-import { recipeSchema } from "@/lib/domain";
-import { RecipeEditor, ImportEditor } from "./editor";
+import Link from "next/link";
+import {
+  Search,
+  Plus,
+  SlidersHorizontal,
+  Snowflake,
+  Users,
+  ArrowUpRight,
+  Clock,
+  BookOpen,
+} from "lucide-react";
+import { randomUUID } from "node:crypto";
 import { userDb } from "@/lib/supabase";
-import { cook, archiveRecipe, importDefaults } from "../actions";
-import { randomUUID } from "crypto";
+import { recipeRecord, meatLabels } from "@/lib/recipes";
+import { RecipeMedia } from "./media";
+import { RecipeMenu } from "./menu";
+import { importDefaults } from "../actions";
 export default async function Recipes({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    meat?: string;
+    freezing?: string;
+    error?: string;
+    created?: string;
+  }>;
 }) {
-  const { error } = await searchParams;
+  const params = await searchParams;
   const { client } = await userDb();
-  const { data: versions, error: loadError } = await client
+  const { data, error } = await client
     .from("recipe_latest")
     .select("*")
     .order("created_at", { ascending: false });
-  if (loadError) throw loadError;
+  if (error) throw error;
+  const all = (data ?? []).map(recipeRecord);
+  const q = (params.q ?? "").trim().toLocaleLowerCase("sk");
+  const recipes = all.filter(
+    (r) =>
+      (!q || r.name.toLocaleLowerCase("sk").includes(q)) &&
+      (!params.meat || r.meat === params.meat) &&
+      (!params.freezing ||
+        (params.freezing === "yes" ? r.freezing : !r.freezing)),
+  );
   return (
-    <div className="stack">
-      <h1>Kniha receptov</h1>
-      {error && (
-        <p role="alert" className="error">
-          Údaje sú neplatné alebo operácia zlyhala. Skontrolujte vstupy a
-          pripojenie.
+    <div className="recipe-page">
+      <header className="recipe-heading">
+        <div>
+          <div className="eyebrow">VAŠA OSOBNÁ KUCHÁRKA</div>
+          <h1>
+            Dobré jedlo sa začína
+            <br className="desktop-break" /> dobrým receptom.
+          </h1>
+          <p className="muted">Obľúbené chute, pripravené na každý deň.</p>
+        </div>
+        <Link href="/recipes/new" className="button">
+          <Plus size={18} />
+          Nový recept
+        </Link>
+      </header>
+      {params.created && (
+        <p role="status" className="recipe-notice">
+          Recept bol uložený do vašej kuchárky.
         </p>
       )}
-      <details className="card">
-        <summary>+ Nový recept</summary>
-        <RecipeEditor requestId={randomUUID()} />
-      </details>
-      <details className="card">
-        <summary>Import receptov z JSON</summary>
-        <p>
-          Schéma 1.0, importType recipes. Rovnaké importId sa spracuje iba raz.
+      {params.error && (
+        <p role="alert" className="error">
+          Operácia sa nepodarila. Skontrolujte pripojenie a skúste znova.
         </p>
-        <ImportEditor />
-      </details>
-      <form action={importDefaults}>
-        <button>Pridať 15 počiatočných receptov</button>
-        <p className="muted">
-          Editovateľné šablóny; náklady a výživa zostanú neznáme. Rovnaká sada
-          sa importuje iba raz.
-        </p>
+      )}
+      <form method="get" className="recipe-filters">
+        <div className="recipe-search">
+          <Search size={20} />
+          <label className="sr-only" htmlFor="recipe-search">
+            Hľadať recept
+          </label>
+          <input
+            id="recipe-search"
+            name="q"
+            defaultValue={params.q}
+            placeholder="Na čo máte chuť?"
+            maxLength={160}
+          />
+        </div>
+        <label className="sr-only" htmlFor="meat-filter">
+          Druh mäsa
+        </label>
+        <select id="meat-filter" name="meat" defaultValue={params.meat ?? ""}>
+          <option value="">Všetky druhy</option>
+          {Object.entries(meatLabels).map(([v, l]) => (
+            <option key={v} value={v}>
+              {l}
+            </option>
+          ))}
+        </select>
+        <label className="sr-only" htmlFor="freeze-filter">
+          Vhodnosť mrazenia
+        </label>
+        <select
+          id="freeze-filter"
+          name="freezing"
+          defaultValue={params.freezing ?? ""}
+        >
+          <option value="">Mrazenie: všetky</option>
+          <option value="yes">Vhodné na mrazenie</option>
+          <option value="no">Nemraziť</option>
+        </select>
+        <button>
+          <SlidersHorizontal size={17} />
+          Filtrovať
+        </button>
+        {(q || params.meat || params.freezing) && (
+          <Link href="/recipes" className="text-link">
+            Zrušiť filtre
+          </Link>
+        )}
       </form>
-      <div className="grid">
-        {versions?.map((v) => (
-          <article className="card" key={v.id}>
-            <span className="badge">
-              {v.portions} porcie · verzia {v.version}
-            </span>
-            <h2 style={{ marginTop: 16 }}>{v.name}</h2>
-            <ul>
-              {v.ingredients.map(
-                (
-                  i: { name: string; quantity: number; unit: string },
-                  n: number,
-                ) => (
-                  <li key={n}>
-                    {i.quantity} {i.unit} {i.name}
-                  </li>
-                ),
-              )}
-            </ul>
-            <details>
-              <summary>Postup varenia</summary>
-              <ol>
-                {v.steps.map((s: string, n: number) => (
-                  <li key={n}>
-                    <p>{s}</p>
-                  </li>
-                ))}
-              </ol>
-              <p>
-                <strong>Zohrievanie:</strong> {v.reheating}
-              </p>
-            </details>
-            <p className="muted">{v.storage}</p>
-            <details>
-              <summary>Upraviť recept — nová verzia</summary>
-              <RecipeEditor
-                requestId={randomUUID()}
-                initial={recipeSchema.parse(v)}
-                versionId={v.id}
-              />
-            </details>
-            <details>
-              <summary>Duplikovať recept</summary>
-              <RecipeEditor
-                requestId={randomUUID()}
-                initial={{
-                  ...recipeSchema.parse(v),
-                  name: v.name + " — kópia",
-                }}
-              />
-            </details>
-            <details>
-              <summary>Archivovať recept</summary>
-              <p>Historické várky zostanú zachované.</p>
-              <form action={archiveRecipe}>
-                <input type="hidden" name="recipe_id" value={v.recipe_id} />
-                <input type="hidden" name="request_id" value={randomUUID()} />
-                <button>Potvrdiť archiváciu</button>
-              </form>
-            </details>
-            <details>
-              <summary>Navariť novú várku</summary>
-              <p>
-                <small>
-                  Náklady zadajte podľa skutočnej várky. Neznámu cenu nechajte
-                  prázdnu.
-                </small>
-              </p>
-              <form action={cook}>
-                <input type="hidden" name="version_id" value={v.id} />
-                <input type="hidden" name="request_id" value={randomUUID()} />
-                <label>
-                  Výsledná hmotnosť (g)
-                  <input name="weight" type="number" min={1} required />
-                </label>
-                <label>
-                  Počet rovnako veľkých balíčkov
-                  <input
-                    name="packages"
-                    type="number"
-                    min={1}
-                    max={100}
-                    defaultValue={2}
-                    required
-                  />
-                </label>
-                <label>
-                  Celkové náklady (Kč)
-                  <input
-                    name="cost"
-                    inputMode="decimal"
-                    placeholder="Neznáme"
-                    pattern="[0-9]+([.,][0-9]{1,2})?"
-                  />
-                </label>
-                <label>
-                  Odporúčaná spotreba pre kvalitu
-                  <input name="best_before" type="date" required />
-                </label>
-                <p>
-                  <small>
-                    Jedlo rýchlo schlaďte; ryžu ideálne do jednej hodiny. Mrazte
-                    približne pri −18 °C. Dátum kvality nie je univerzálnou
-                    hranicou bezpečnosti.
-                  </small>
-                </p>
-                <button disabled={!v.freezing}>Vytvoriť várku a zásoby</button>
-                {!v.freezing && (
-                  <p className="error">
-                    Tento recept nie je vhodný na mrazenie.
-                  </p>
+      <div className="recipe-section-bar">
+        <h2>
+          Vaše recepty <span>{recipes.length}</span>
+        </h2>
+        <Link href="/recipes/import" className="text-link">
+          Importovať JSON <ArrowUpRight size={16} />
+        </Link>
+      </div>
+      <div className="recipe-gallery">
+        {recipes.map((r) => (
+          <article className="recipe-tile" key={r.recipe_id}>
+            <Link
+              href={"/recipes/" + r.recipe_id}
+              aria-label={"Otvoriť " + r.name}
+            >
+              <RecipeMedia photos={r.photos} />
+            </Link>
+            <div className="recipe-tile-body">
+              <div className="recipe-tile-top">
+                <span className="recipe-category">{meatLabels[r.meat]}</span>
+                <RecipeMenu
+                  id={r.recipe_id}
+                  name={r.name}
+                  requestId={randomUUID()}
+                />
+              </div>
+              <h2>
+                <Link href={"/recipes/" + r.recipe_id}>{r.name}</Link>
+              </h2>
+              <div className="recipe-meta">
+                <span>
+                  <Users size={16} />
+                  {r.portions} porcie
+                </span>
+                {r.prep_minutes && (
+                  <span>
+                    <Clock size={16} />
+                    {r.prep_minutes} min
+                  </span>
                 )}
-              </form>
-            </details>
+                <span className={r.freezing ? "freeze-ok" : "muted"}>
+                  <Snowflake size={16} />
+                  {r.freezing ? "Na mrazenie" : "Nemraziť"}
+                </span>
+              </div>
+              <Link href={"/recipes/" + r.recipe_id} className="recipe-open">
+                Otvoriť recept <ArrowUpRight size={18} />
+              </Link>
+            </div>
           </article>
         ))}
       </div>
-      {!versions?.length && (
-        <p className="empty">
-          Pridajte svoj prvý recept. Výživové hodnoty zatiaľ zostávajú neznáme.
-        </p>
+      {!recipes.length && (
+        <section className="recipe-empty">
+          <BookOpen size={36} strokeWidth={1.2} />
+          <h2>
+            {all.length
+              ? "Žiadny recept nezodpovedá filtrom"
+              : "Vaša kuchárka čaká na prvý recept"}
+          </h2>
+          <p className="muted">
+            {all.length
+              ? "Skúste inú chuť alebo zrušte filtre."
+              : "Pridajte vlastný recept alebo začnite pripravenými šablónami."}
+          </p>
+          {all.length ? (
+            <Link href="/recipes" className="button">
+              Zrušiť filtre
+            </Link>
+          ) : (
+            <form action={importDefaults}>
+              <button>Pridať 15 receptových šablón</button>
+              <p>
+                <small>Bez vymyslených cien a výživových hodnôt.</small>
+              </p>
+            </form>
+          )}
+        </section>
       )}
     </div>
   );

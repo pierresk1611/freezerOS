@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requestTime } from "@/lib/time";
 import { userDb } from "@/lib/supabase";
 import { money, remainingValue } from "@/lib/domain";
@@ -34,9 +35,9 @@ export default async function Home() {
           Vyberte zo svojich zásob podľa odporúčanej spotreby a posledných
           jedál.
         </p>
-        <a className="button" href="/surprise">
+        <Link className="button" href="/surprise">
           🎲 Prekvap ma!
-        </a>
+        </Link>
       </section>
       <div className="grid">
         <div className="card">
@@ -58,12 +59,12 @@ export default async function Home() {
       <section className="card">
         <h2>Vaša kuchyňa v pohybe</h2>
         <div className="row">
-          <a className="button" href="/recipes">
+          <Link className="button" href="/recipes">
             Vytvoriť recept a várku
-          </a>
-          <a className="button" href="/inventory">
+          </Link>
+          <Link className="button" href="/inventory">
             Otvoriť mrazničku
-          </a>
+          </Link>
         </div>
         {!items.length && (
           <p className="empty">

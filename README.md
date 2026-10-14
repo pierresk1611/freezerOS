@@ -78,3 +78,17 @@ Po prihlásení použite „Pridať 15 počiatočných receptov“. Vzniknú sú
 [Importná JSON schéma](docs/recipes.schema.json) dokumentuje podporovaný typ recipes. JSON môžete vložiť alebo nahrať, validovať, skontrolovať náhľad a až potom potvrdiť. Rovnaké importId nevytvorí duplicity. Ostatné importType zatiaľ nie sú implementované.
 
 PWA má manifest, PNG ikonu a service worker s verejnou offline obrazovkou. Súkromné stránky ani odpovede API sa neukladajú do offline cache. Inštalácia na fyzickom telefóne ešte nebola overená.
+
+## Rozhranie receptov
+
+Katalóg `/recipes` obsahuje vyhľadávanie, filtre a galériu s jednou kartou na mobile a 2–3 stĺpcami na desktope. Karty obsahujú len prehľad a kontextové menu; žiadne editačné formuláre.
+
+Detail `/recipes/[recipe_id]` zobrazuje aktuálnu verziu, suroviny, celý postup, skladovanie a zohrievanie. Známy Food Cost zobrazuje skutočné náklady poslednej várky tejto verzie, bez odhadovania ceny porcie. Neznáme údaje sa nevypĺňajú. ID v URL je stabilné ID receptu, nie meniace sa ID verzie.
+
+Editor `/recipes/[recipe_id]/edit` ukladá novú verziu cez existujúce RPC. Podporuje dynamické suroviny, kroky a zmenu ich poradia. Pri chybe zachová rozpracovaný formulár. Nový recept a duplikácia používajú `/recipes/new`; JSON import je na `/recipes/import`.
+
+Režim `/recipes/[recipe_id]/cook` zobrazuje veľké jednotlivé kroky. Dokončenie varenia samo nemení sklad. Zaevidovanie várky je na samostatnej stránke `/recipes/[recipe_id]/batch` a používa pôvodnú skladovú transakciu.
+
+`RecipeMedia` prijíma zoznam `RecipePhoto` so signed URL, aby bolo možné v budúcnosti napojiť privátne fotografie zo Storage. Aktuálny dátový adaptér nevracia fotografie, ktoré nie sú uložené; používa označený neutrálny placeholder. Nahrávanie fotografií nie je súčasťou tohto redesignu. Databázová schéma ani RLS sa nemenia.
+
+E2E testy používajú samostatný port 3001 (možno zmeniť cez FREEZER_TEST_PORT), overujú celý receptový workflow aj skladový odpis pri šírkach 360, 390, 768, 1280 a 1440 px.

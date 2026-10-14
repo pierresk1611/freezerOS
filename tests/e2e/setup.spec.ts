@@ -17,27 +17,29 @@ test("recept → várka → sklad → konzumácia", async ({ page }, testInfo) =
     ),
   ).toBe(true);
   await page.goto("/recipes");
-  await page.getByText("+ Nový recept", { exact: true }).click();
-  const editor = page
-    .locator("details")
-    .filter({ has: page.getByText("+ Nový recept", { exact: true }) });
+  await page.getByRole("link", { name: "Nový recept", exact: true }).click();
+  const editor = page.locator("form.recipe-editor");
   const name = "Guláš " + randomUUID();
   await editor.getByLabel("Názov", { exact: true }).fill(name);
-  await editor.getByLabel("Názov suroviny").fill("Hovädzie mäso");
   await editor
-    .getByLabel("Postup — jeden krok na riadok")
-    .fill("Orestovať cibuľu.\nMäso dusiť do mäkka.");
+    .getByLabel("Názov suroviny 1", { exact: true })
+    .fill("Hovädzie mäso");
+  await editor
+    .getByLabel("Krok 1", { exact: true })
+    .fill("Orestovať cibuľu a mäso dusiť do mäkka.");
   await editor.getByLabel("Postup zohrievania").fill("Dôkladne prehriať.");
   await editor.getByRole("button", { name: "Uložiť recept" }).click();
   const card = page
     .getByRole("article")
     .filter({ has: page.getByRole("heading", { name, exact: true }) });
   await expect(card).toBeVisible();
-  await card.getByText("Navariť novú várku", { exact: true }).click();
-  await card.getByLabel("Výsledná hmotnosť (g)").fill("1000");
-  await card.getByLabel("Celkové náklady (Kč)").fill("278.01");
-  await card.getByLabel("Odporúčaná spotreba pre kvalitu").fill("2027-01-01");
-  await card.getByRole("button", { name: "Vytvoriť várku a zásoby" }).click();
+  await card.getByRole("link", { name: "Otvoriť recept", exact: true }).click();
+  await expect(page).toHaveURL(/\/recipes\/[0-9a-f-]+$/);
+  await page.getByRole("link", { name: "Navariť várku", exact: true }).click();
+  await page.getByLabel("Výsledná hmotnosť (g)").fill("1000");
+  await page.getByLabel("Celkové náklady (Kč)").fill("278.01");
+  await page.getByLabel("Odporúčaná spotreba pre kvalitu").fill("2027-01-01");
+  await page.getByRole("button", { name: "Vytvoriť várku a zásoby" }).click();
   await expect(page).toHaveURL(/inventory/);
   const pack = page
     .getByRole("article")
@@ -62,6 +64,7 @@ test("recept → várka → sklad → konzumácia", async ({ page }, testInfo) =
     ),
   ).toBe(true);
   await page.screenshot({
+    caret: "initial",
     path: testInfo.outputPath("inventory.png"),
     fullPage: true,
   });

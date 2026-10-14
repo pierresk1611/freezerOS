@@ -1,24 +1,47 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import {
+  Plus,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  Save,
+  Check,
+} from "lucide-react";
 import { recipeSchema, importSchema } from "@/lib/domain";
-import { createRecipe, importRecipes } from "../actions";
-const editorSchema = recipeSchema
-  .omit({ steps: true })
-  .extend({ stepsText: z.string().trim().min(1) });
+import { importRecipes } from "../actions";
+import { saveRecipe, type SaveResult } from "./actions";
+const editorSchema = recipeSchema.omit({ steps: true }).extend({
+  steps: z
+    .array(z.object({ text: z.string().trim().min(1).max(2000) }))
+    .min(1)
+    .max(100),
+});
 type Fields = z.input<typeof editorSchema>;
+function FieldError({ invalid, text }: { invalid: unknown; text: string }) {
+  return invalid ? (
+    <p className="field-error" role="alert">
+      {text}
+    </p>
+  ) : null;
+}
 export function RecipeEditor({
   requestId,
   initial,
   versionId,
+  cancelHref = "/recipes",
 }: {
   requestId: string;
   initial?: z.infer<typeof recipeSchema>;
   versionId?: string;
+  cancelHref?: string;
 }) {
   const [pending, setPending] = useState(false);
+  const [result, setResult] = useState<SaveResult>({});
   const {
     register,
     control,
@@ -27,12 +50,12 @@ export function RecipeEditor({
   } = useForm<Fields, unknown, z.output<typeof editorSchema>>({
     resolver: zodResolver(editorSchema),
     defaultValues: initial
-      ? { ...initial, stepsText: initial.steps.join("\n") }
+      ? { ...initial, steps: initial.steps.map((text) => ({ text })) }
       : {
           name: "",
           portions: 2,
           ingredients: [{ name: "", quantity: 100, unit: "g" }],
-          stepsText: "",
+          steps: [{ text: "" }],
           reheating: "",
           storage:
             "Rýchlo schlaďte. Rozmrazujte v chladničke a dôkladne prehrejte.",
@@ -40,147 +63,282 @@ export function RecipeEditor({
           freezing: true,
         },
   });
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "ingredients",
-  });
+  const ingredients = useFieldArray({ control, name: "ingredients" });
+  const steps = useFieldArray({ control, name: "steps" });
   return (
     <form
+      noValidate
+      className="recipe-editor"
       onSubmit={handleSubmit(async (values) => {
         setPending(true);
+        setResult({});
         const form = new FormData();
         form.set("request_id", requestId);
-        form.set("name", values.name);
-        form.set("portions", String(values.portions));
-        form.set("ingredients", JSON.stringify(values.ingredients));
-        form.set("steps", values.stepsText);
-        form.set("reheating", values.reheating);
-        form.set("storage", values.storage);
-        form.set("meat", values.meat);
-        form.set("freezing", String(values.freezing));
+        form.set(
+          "payload",
+          JSON.stringify({ ...values, steps: values.steps.map((s) => s.text) }),
+        );
         if (versionId) form.set("version_id", versionId);
         try {
-          await createRecipe(form);
+          const response = await saveRecipe(form);
+          if (response) setResult(response);
+        } catch {
+          setResult({
+            message:
+              "Spojenie sa prerušilo. Úpravy zostávajú vo formulári; skúste znova.",
+          });
         } finally {
           setPending(false);
         }
       })}
     >
-      <label htmlFor={requestId + "-name"}>Názov</label>
-      <input
-        id={requestId + "-name"}
-        {...register("name")}
-        required
-        minLength={2}
-      />
-      <label htmlFor={requestId + "-portions"}>Porcie</label>
-      <input
-        id={requestId + "-portions"}
-        type="number"
-        {...register("portions", { valueAsNumber: true })}
-        min={1}
-        max={100}
-        required
-      />
-      <label>Suroviny</label>
-      <div className="stack">
-        {fields.map((field, i) => (
-          <fieldset className="card" key={field.id}>
-            <legend>Surovina {i + 1}</legend>
-            <label htmlFor={requestId + "-ingredient-" + i}>
-              Názov suroviny
-            </label>
+      <section className="editor-section">
+        <div className="eyebrow">01 · ZÁKLAD RECEPTU</div>
+        <h2>Dajte jedlu meno</h2>
+        <label htmlFor="recipe-name">Názov</label>
+        <input
+          id="recipe-name"
+          {...register("name")}
+          aria-invalid={!!errors.name}
+          placeholder="Napríklad poctivý hovädzí guláš"
+          maxLength={160}
+        />
+        <FieldError
+          invalid={errors.name}
+          text="Zadajte názov s 2 až 160 znakmi."
+        />
+        <div className="form-grid">
+          <div>
+            <label htmlFor="recipe-portions">Porcie</label>
             <input
-              id={requestId + "-ingredient-" + i}
-              {...register(`ingredients.${i}.name`)}
-              required
+              id="recipe-portions"
+              type="number"
+              min={1}
+              max={100}
+              {...register("portions", { valueAsNumber: true })}
+              aria-invalid={!!errors.portions}
             />
-            <div className="form-grid">
-              <label>
-                Množstvo
+            <FieldError
+              invalid={errors.portions}
+              text="Zadajte celé číslo od 1 do 100."
+            />
+          </div>
+          <div>
+            <label htmlFor="recipe-meat">Druh mäsa</label>
+            <select id="recipe-meat" {...register("meat")}>
+              <option value="none">Bez mäsa</option>
+              <option value="beef">Hovädzie</option>
+              <option value="pork">Bravčové</option>
+              <option value="chicken">Kuracie</option>
+              <option value="other">Ostatné</option>
+              <option value="fish">Ryba</option>
+            </select>
+          </div>
+        </div>
+      </section>
+      <section className="editor-section">
+        <div className="eyebrow">02 · SUROVINY</div>
+        <h2>Čo budeme potrebovať?</h2>
+        <p className="muted">
+          Zadajte množstvá pre celý recept. Objem sa automaticky neprepočítava
+          na hmotnosť.
+        </p>
+        <div className="ingredient-editor-list">
+          {ingredients.fields.map((field, i) => (
+            <fieldset className="ingredient-editor-row" key={field.id}>
+              <legend className="sr-only">Surovina {i + 1}</legend>
+              <div className="ingredient-name">
+                <label htmlFor={"ingredient-name-" + i}>
+                  Názov suroviny {i + 1}
+                </label>
                 <input
+                  id={"ingredient-name-" + i}
+                  {...register(`ingredients.${i}.name`)}
+                  placeholder="Surovina"
+                  aria-invalid={!!errors.ingredients?.[i]?.name}
+                />
+                <FieldError
+                  invalid={errors.ingredients?.[i]?.name}
+                  text="Zadajte názov suroviny (najviac 120 znakov)."
+                />
+              </div>
+              <div>
+                <label htmlFor={"ingredient-qty-" + i}>Množstvo {i + 1}</label>
+                <input
+                  id={"ingredient-qty-" + i}
                   type="number"
+                  inputMode="decimal"
                   step="any"
                   min="0.01"
+                  max={1000000}
                   {...register(`ingredients.${i}.quantity`, {
                     valueAsNumber: true,
                   })}
-                  required
+                  aria-invalid={!!errors.ingredients?.[i]?.quantity}
                 />
-              </label>
-              <label>
-                Jednotka
-                <select {...register(`ingredients.${i}.unit`)}>
+                <FieldError
+                  invalid={errors.ingredients?.[i]?.quantity}
+                  text="Zadajte kladné množstvo, najviac 1 000 000."
+                />
+              </div>
+              <div>
+                <label htmlFor={"ingredient-unit-" + i}>Jednotka {i + 1}</label>
+                <select
+                  id={"ingredient-unit-" + i}
+                  {...register(`ingredients.${i}.unit`)}
+                >
                   <option value="g">g</option>
                   <option value="ml">ml</option>
                   <option value="ks">ks</option>
                 </select>
-              </label>
+              </div>
+              <button
+                type="button"
+                className="icon-button ingredient-remove"
+                aria-label={"Odstrániť surovinu " + (i + 1)}
+                disabled={ingredients.fields.length === 1 || pending}
+                onClick={() => ingredients.remove(i)}
+              >
+                <Trash2 size={18} />
+              </button>
+            </fieldset>
+          ))}
+        </div>
+        <button
+          type="button"
+          className="button-secondary"
+          disabled={ingredients.fields.length >= 100 || pending}
+          onClick={() =>
+            ingredients.append({ name: "", quantity: 100, unit: "g" })
+          }
+        >
+          <Plus size={17} />
+          Pridať surovinu
+        </button>
+      </section>
+      <section className="editor-section">
+        <div className="eyebrow">03 · POSTUP</div>
+        <h2>Krok za krokom</h2>
+        <p className="muted">
+          Každý krok má vlastný priestor. Poradie môžete kedykoľvek zmeniť.
+        </p>
+        <div className="stack">
+          {steps.fields.map((field, i) => (
+            <div className="step-editor-row" key={field.id}>
+              <div className="step-editor-top">
+                <label htmlFor={"step-" + i}>Krok {i + 1}</label>
+                <div className="row">
+                  <button
+                    type="button"
+                    className="icon-button"
+                    aria-label={"Posunúť krok " + (i + 1) + " hore"}
+                    disabled={i === 0 || pending}
+                    onClick={() => steps.move(i, i - 1)}
+                  >
+                    <ChevronUp size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    className="icon-button"
+                    aria-label={"Posunúť krok " + (i + 1) + " dole"}
+                    disabled={i === steps.fields.length - 1 || pending}
+                    onClick={() => steps.move(i, i + 1)}
+                  >
+                    <ChevronDown size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    className="icon-button"
+                    aria-label={"Odstrániť krok " + (i + 1)}
+                    disabled={steps.fields.length === 1 || pending}
+                    onClick={() => steps.remove(i)}
+                  >
+                    <Trash2 size={17} />
+                  </button>
+                </div>
+              </div>
+              <textarea
+                id={"step-" + i}
+                {...register(`steps.${i}.text`)}
+                placeholder="Čo treba v tomto kroku urobiť?"
+                aria-invalid={!!errors.steps?.[i]?.text}
+              />
+              <FieldError
+                invalid={errors.steps?.[i]?.text}
+                text="Vyplňte krok varenia (najviac 2 000 znakov)."
+              />
             </div>
-            <button
-              type="button"
-              disabled={fields.length === 1}
-              onClick={() => remove(i)}
-            >
-              Odstrániť surovinu {i + 1}
-            </button>
-          </fieldset>
-        ))}
-      </div>
-      <button
-        type="button"
-        onClick={() => append({ name: "", quantity: 100, unit: "g" })}
-        style={{ marginTop: 12 }}
-      >
-        + Pridať surovinu
-      </button>
-      <p>
-        <small>Objem sa automaticky neprepočítava na hmotnosť.</small>
-      </p>
-      <label htmlFor={requestId + "-steps"}>
-        Postup — jeden krok na riadok
-      </label>
-      <textarea id={requestId + "-steps"} {...register("stepsText")} required />
-      <label htmlFor={requestId + "-reheating"}>Postup zohrievania</label>
-      <textarea
-        id={requestId + "-reheating"}
-        {...register("reheating")}
-        required
-      />
-      <label>
-        Druh mäsa
-        <select {...register("meat")}>
-          <option value="none">Bez mäsa</option>
-          <option value="beef">Hovädzie</option>
-          <option value="pork">Bravčové</option>
-          <option value="chicken">Kuracie</option>
-          <option value="other">Ostatné</option>
-          <option value="fish">Ryba</option>
-        </select>
-      </label>
-      <label>
-        Skladovacie odporúčania
-        <textarea {...register("storage")} required />
-      </label>
-      <label className="row">
-        <input
-          style={{ width: 24 }}
-          type="checkbox"
-          {...register("freezing")}
+          ))}
+        </div>
+        <button
+          type="button"
+          className="button-secondary"
+          disabled={steps.fields.length >= 100 || pending}
+          onClick={() => steps.append({ text: "" })}
+        >
+          <Plus size={17} />
+          Pridať krok
+        </button>
+      </section>
+      <section className="editor-section">
+        <div className="eyebrow">04 · NA NESKÔR</div>
+        <h2>Aby chutilo aj zajtra</h2>
+        <label className="freeze-toggle">
+          <input type="checkbox" {...register("freezing")} />
+          <span>
+            <strong>Vhodné na mrazenie</strong>
+            <small>Vypnite napríklad pri majonézovom šaláte.</small>
+          </span>
+          <Check size={20} />
+        </label>
+        <label htmlFor="recipe-storage">Skladovacie odporúčania</label>
+        <textarea
+          id="recipe-storage"
+          {...register("storage")}
+          aria-invalid={!!errors.storage}
         />
-        Vhodné na mrazenie
-      </label>
+        <FieldError
+          invalid={errors.storage}
+          text="Zadajte odporúčania na skladovanie (najviac 2 000 znakov)."
+        />
+        <label htmlFor="recipe-reheating">Postup zohrievania</label>
+        <textarea
+          id="recipe-reheating"
+          {...register("reheating")}
+          aria-invalid={!!errors.reheating}
+        />
+        <FieldError
+          invalid={errors.reheating}
+          text="Zadajte postup zohrievania (najviac 2 000 znakov)."
+        />
+      </section>
       {Object.keys(errors).length > 0 && (
-        <p role="alert" className="error">
-          Skontrolujte názov, množstvá, postup a počet porcií.
+        <p className="recipe-form-alert" role="alert">
+          Skontrolujte označené polia. Recept zatiaľ nebol uložený.
         </p>
       )}
-      <button disabled={pending}>
-        {pending ? "Ukladám…" : "Uložiť recept"}
-      </button>
+      {result.message && (
+        <p className="recipe-form-alert" role="alert">
+          {result.message}
+        </p>
+      )}
+      <footer className="editor-actions">
+        <Link className="button button-secondary" href={cancelHref}>
+          Zrušiť
+        </Link>
+        <button disabled={pending}>
+          <Save size={18} />
+          {pending
+            ? "Ukladám…"
+            : versionId
+              ? "Uložiť novú verziu"
+              : "Uložiť recept"}
+        </button>
+      </footer>
     </form>
   );
 }
+
 export function ImportEditor() {
   const [text, setText] = useState("");
   const [message, setMessage] = useState("");
