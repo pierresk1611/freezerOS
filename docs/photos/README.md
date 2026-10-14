@@ -1,5 +1,7 @@
 # Fotografie receptov
 
+Ak už SQL oznámilo úspech, ale fotografie stále hlásia chybu, použite [bezpečnú opravu 006](repair.md). Zachová receptové funkcie z rozšírenia 005; fotografickú migráciu 004 v takom prípade nespúšťajte naslepo znovu.
+
 ## Aktivácia v produkcii
 
 Kód vyžaduje novú migráciu. Staršie migrácie sa nemenia, recepty sa znovu neimportujú.

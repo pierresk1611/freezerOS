@@ -498,3 +498,4 @@ try {
 }
 
 await import("./test-cubes.mjs");
+await import("./test-photo-repair.mjs");

@@ -51,7 +51,11 @@ async function authorize(
   if (failure)
     return {
       failure: error(
-        "Fotografie nie sú dostupné. Skontrolujte databázovú migráciu.",
+        ["42703", "PGRST204", "PGRST205", "42P01"].includes(failure.code)
+          ? "Fotografie nie sú aktivované v použitom Supabase projekte. Spustite opravnú migráciu 006."
+          : failure.code === "42501"
+            ? "Chýbajú databázové oprávnenia pre fotografie. Spustite opravnú migráciu 006."
+            : "Spojenie s databázou fotografií zlyhalo. Skúste načítanie zopakovať.",
         503,
       ),
     };

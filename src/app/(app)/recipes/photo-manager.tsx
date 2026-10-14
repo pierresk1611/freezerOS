@@ -197,6 +197,10 @@ export function PhotoManager({
         Vaše jedlo, váš záber. Najviac 8 fotografií, JPG / PNG / WEBP, do 10 MB.
         Na počítači ich môžete pretiahnuť sem.
       </p>
+      <p>
+        <strong>Po výbere sa fotografia automaticky nahrá a uloží.</strong>{" "}
+        Tlačidlo „Uložiť novú verziu“ dole na stránke ukladá text receptu.
+      </p>
       <div className="photo-actions">
         <button
           type="button"
@@ -218,6 +222,15 @@ export function PhotoManager({
           <p>
             Správa existujúcich fotografií nie je načítaná. Výber súboru zostáva
             dostupný; uloženie vyžaduje funkčné úložisko.
+          </p>
+          <p>
+            <a
+              href="https://github.com/pierresk1611/freezerOS/blob/main/docs/photos/repair.md"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Ako aktivovať fotografie v správnom Supabase projekte
+            </a>
           </p>
           <button
             type="button"
