@@ -1,6 +1,15 @@
 import { configured, db } from "@/lib/supabase";
 import { redirect } from "next/navigation";
-import { Home, Snowflake, BookOpen, Dices, LogOut, Layers } from "lucide-react";
+import {
+  Home,
+  Snowflake,
+  BookOpen,
+  Dices,
+  LogOut,
+  Layers,
+  MoreHorizontal,
+  Wallet,
+} from "lucide-react";
 import { logout } from "../login/actions";
 const links = [
   { href: "/", label: "Domov", icon: Home },
@@ -25,7 +34,10 @@ export default async function AppLayout({
       <aside className="sidebar">
         <div className="brand">❄ FREEZER OS</div>
         <nav>
-          {links.map((x) => (
+          {[
+            ...links,
+            { href: "/food-cost", label: "Food Cost", icon: Wallet },
+          ].map((x) => (
             <a href={x.href} key={x.href}>
               <x.icon size={20} />
               {x.label}
@@ -44,7 +56,10 @@ export default async function AppLayout({
         {children}
       </main>
       <nav className="bottom" aria-label="Hlavná navigácia">
-        {links.map((x) => (
+        {[
+          ...links.slice(0, 4),
+          { href: "/more", label: "Viac", icon: MoreHorizontal },
+        ].map((x) => (
           <a href={x.href} key={x.href}>
             <x.icon size={22} />
             {x.label}

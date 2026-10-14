@@ -1173,3 +1173,232 @@ textarea[aria-invalid="true"] {
   width: 100%;
   min-width: 0;
 }
+
+/* Food Cost: mobile review cards and desktop document workspace. */
+.food-page {
+  max-width: 1400px;
+  margin: auto;
+  min-width: 0;
+}
+.food-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0;
+}
+.food-tabs a {
+  padding: 10px 14px;
+  background: var(--card, #fff);
+  border: 1px solid #dce3dc;
+  border-radius: 30px;
+  font-size: 14px;
+}
+.food-kpis,
+.food-charts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+.food-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.food-fields button {
+  align-self: end;
+}
+.receipt-workspace {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.receipt-original img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+.receipt-original iframe {
+  width: 100%;
+  height: 500px;
+  border: 0;
+}
+.receipt-original article {
+  margin-top: 20px;
+}
+.receipt-original input[type="file"] {
+  display: block;
+  max-width: 100%;
+  font-size: 12px;
+  margin-top: 8px;
+}
+.receipt-workspace fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.receipt-line {
+  border: 1px solid #dce3dc;
+  border-radius: 14px;
+  padding: 16px;
+  margin: 16px 0;
+  display: grid;
+  gap: 12px;
+}
+.receipt-line h3 {
+  margin: 0;
+}
+.receipt-line.uncertain,
+.food-warning {
+  background: #fff0d6;
+  color: #643c00;
+}
+.food-warning,
+.food-success {
+  padding: 16px;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+.food-success {
+  background: #e3f1e7;
+  color: #21503b;
+}
+.food-chart {
+  min-width: 0;
+}
+.check-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.check-label input {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.food-page button {
+  min-height: 44px;
+}
+.food-page input,
+.food-page select {
+  max-width: 100%;
+  min-width: 0;
+}
+.receipt-line button {
+  justify-self: start;
+}
+.food-page .card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.food-page label.button {
+  display: block;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+@media (min-width: 768px) {
+  .food-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .food-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .food-charts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .receipt-line {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .receipt-line h3 {
+    grid-column: 1/-1;
+  }
+}
+@media (min-width: 1100px) {
+  .receipt-workspace {
+    grid-template-columns: minmax(260px, 0.85fr) minmax(440px, 1.4fr);
+  }
+  .receipt-original {
+    align-self: start;
+    position: sticky;
+    top: 20px;
+  }
+  .food-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.receipt-table-wrap {
+  max-width: 100%;
+  min-width: 0;
+}
+.receipt-items,
+.receipt-items tbody {
+  display: block;
+  width: 100%;
+}
+.receipt-items thead {
+  display: none;
+}
+.receipt-line td {
+  display: block;
+  min-width: 0;
+}
+.receipt-line td:first-child {
+  grid-column: 1/-1;
+}
+.receipt-line td label {
+  margin: 0;
+}
+.receipt-line td input,
+.receipt-line td select {
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .receipt-table-wrap {
+    overflow-x: auto;
+  }
+  .receipt-items {
+    display: table;
+    min-width: 1250px;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+  }
+  .receipt-items tbody {
+    display: table-row-group;
+  }
+  .receipt-items thead {
+    display: table-header-group;
+  }
+  .receipt-items th {
+    font-size: 12px;
+    text-align: left;
+    padding: 8px;
+  }
+  .receipt-items .receipt-line {
+    display: table-row;
+  }
+  .receipt-line td {
+    display: table-cell;
+    vertical-align: top;
+    padding: 8px;
+    min-width: 100px;
+  }
+  .receipt-line td:nth-child(2),
+  .receipt-line td:nth-child(3) {
+    min-width: 160px;
+  }
+  .receipt-line td:first-child {
+    min-width: 90px;
+  }
+  .receipt-line h3 {
+    font-family: inherit;
+    font-size: 12px;
+  }
+  .receipt-line td label {
+    font-size: 0;
+  }
+  .receipt-line td input,
+  .receipt-line td select {
+    font-size: 14px;
+  }
+}

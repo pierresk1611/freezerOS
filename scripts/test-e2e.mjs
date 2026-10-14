@@ -48,23 +48,22 @@ try {
   );
   process.exitCode = result.status ?? 1;
 } finally {
-  async function removeFixtureFiles(prefix) {
+  async function removeFixtureFiles(prefix, bucket) {
     const listing = await admin.storage
-      .from("recipe-photos")
+      .from(bucket)
       .list(prefix, { limit: 1000 });
     if (listing.error) throw listing.error;
     for (const item of listing.data ?? []) {
       const path = prefix + "/" + item.name;
-      if (!item.id) await removeFixtureFiles(path);
+      if (!item.id) await removeFixtureFiles(path, bucket);
       else {
-        const removed = await admin.storage
-          .from("recipe-photos")
-          .remove([path]);
+        const removed = await admin.storage.from(bucket).remove([path]);
         if (removed.error) throw removed.error;
       }
     }
   }
-  await removeFixtureFiles(data.user.id);
+  await removeFixtureFiles(data.user.id, "recipe-photos");
+  await removeFixtureFiles(data.user.id, "purchase-receipts");
   const result = await admin.auth.admin.deleteUser(data.user.id);
   if (result.error) throw result.error;
 }

@@ -499,3 +499,6 @@ try {
 
 await import("./test-cubes.mjs");
 await import("./test-photo-repair.mjs");
+
+await import("./test-food-cost.mjs");
+await import("./test-food-migration.mjs");

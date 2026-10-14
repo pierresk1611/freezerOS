@@ -96,3 +96,7 @@ E2E testy používajú samostatný port 3001 (možno zmeniť cez FREEZER_TEST_PO
 Fotografie receptov: [aktivácia súkromného Storage, upload a licencie](docs/photos/README.md). Nová migrácia `202610140004_recipe_photos.sql` je potrebná aj pre už existujúce recepty; ID a kuchárske verzie zachováva.
 
 Trhané mäso a vákuové kocky: [aktivácia migrácie 005 a celý workflow](docs/pulled-cubes/README.md). Nové šablóny sa pridávajú výhradne potvrdením v `/recipes/pulled`, porciovanie nájdete v `/portioning`, mäkké preferencie v `/preferences` a základný plán v `/meal-plan`.
+
+## Food Cost a účtenky
+
+Nový finančný tok a konfigurácia rozpoznávania: [návod](docs/food-cost/README.md). Cloudový projekt vyžaduje schválenú novú migráciu 007; existujúce nákladové snapshoty sa nemenia.

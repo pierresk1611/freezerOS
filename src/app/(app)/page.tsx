@@ -62,6 +62,9 @@ export default async function Home() {
           <Link className="button" href="/recipes">
             Vytvoriť recept a várku
           </Link>
+          <Link className="button" href="/food-cost/receipts/new">
+            Naskenovať účtenku
+          </Link>
           <Link className="button" href="/inventory">
             Otvoriť mrazničku
           </Link>
