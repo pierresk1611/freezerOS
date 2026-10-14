@@ -1,0 +1,1 @@
+-- No automatic user or inventory seed. Import recipe templates after signing in.

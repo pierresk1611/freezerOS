@@ -1,0 +1,841 @@
+{
+  "schemaVersion": "1.0",
+  "importId": "8e5221a4-23c7-4d77-907b-48b4c87c744f",
+  "importType": "recipes",
+  "source": "FREEZER OS editable recipe templates",
+  "generatedAt": "2026-10-14T00:00:00Z",
+  "payload": [
+    {
+      "name": "Hovädzí Bún bò Nam Bộ bowl",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Hovädzie rezančeky",
+          "quantity": 420,
+          "unit": "g"
+        },
+        {
+          "name": "Jazmínová ryža",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "Mrkva",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "Červená paprika",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "Cibuľa",
+          "quantity": 60,
+          "unit": "g"
+        },
+        {
+          "name": "Strúčiky cesnaku",
+          "quantity": 2,
+          "unit": "ks"
+        },
+        {
+          "name": "Sójová omáčka",
+          "quantity": 20,
+          "unit": "ml"
+        },
+        {
+          "name": "Rybacia omáčka",
+          "quantity": 15,
+          "unit": "ml"
+        },
+        {
+          "name": "Limetková šťava",
+          "quantity": 20,
+          "unit": "ml"
+        },
+        {
+          "name": "Med",
+          "quantity": 10,
+          "unit": "g"
+        },
+        {
+          "name": "Voda",
+          "quantity": 40,
+          "unit": "ml"
+        },
+        {
+          "name": "Olej",
+          "quantity": 10,
+          "unit": "ml"
+        }
+      ],
+      "steps": [
+        "Ryžu prepláchnite a uvarte podľa návodu.",
+        "Mäso nakrájajte naprieč vláknami; premiešajte s cesnakom a sójovou omáčkou. Mrkvu, papriku a cibuľu nakrájajte.",
+        "Na oleji prudko opečte mäso po menších dávkach. Pridajte zeleninu a krátko restujte.",
+        "Zmiešajte rybaciu omáčku, limetkovú šťavu, med a vodu. Vmiešajte do mäsa a krátko prehrejte. Rozdeľte s ryžou na dve porcie."
+      ],
+      "reheating": "Rozmrazujte v chladničke. Hotové jedlo dôkladne prehrejte v celom objeme; pri ryži odporúčame jediný ohrev.",
+      "storage": "Rýchlo schlaďte v plytkých nádobách; ryžu ideálne do jednej hodiny. Skladujte zmrazené približne pri −18 °C. Predvolené odporúčanie pre kvalitu je 90 dní, nie univerzálna hranica bezpečnosti. Surové a hotové mäso označujte oddelene.",
+      "meat": "beef",
+      "freezing": true
+    },
+    {
+      "name": "Bravčové Bún chả fašírky",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Mleté bravčové",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "Ryža",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "Mrkva",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "Cibuľa",
+          "quantity": 50,
+          "unit": "g"
+        },
+        {
+          "name": "Strúčiky cesnaku",
+          "quantity": 2,
+          "unit": "ks"
+        },
+        {
+          "name": "Rybacia omáčka",
+          "quantity": 15,
+          "unit": "ml"
+        },
+        {
+          "name": "Sójová omáčka",
+          "quantity": 10,
+          "unit": "ml"
+        },
+        {
+          "name": "Limetková šťava",
+          "quantity": 20,
+          "unit": "ml"
+        },
+        {
+          "name": "Cukor",
+          "quantity": 15,
+          "unit": "g"
+        },
+        {
+          "name": "Voda",
+          "quantity": 70,
+          "unit": "ml"
+        },
+        {
+          "name": "Olej",
+          "quantity": 10,
+          "unit": "ml"
+        }
+      ],
+      "steps": [
+        "Ryžu prepláchnite a uvarte. Mrkvu nastrúhajte.",
+        "Mleté mäso premiešajte s nadrobno nasekanou cibuľou a cesnakom, sójovou omáčkou a polovicou rybacej omáčky. Vytvarujte malé fašírky.",
+        "Fašírky opečte na oleji z oboch strán a dopečte tak, aby boli úplne tepelne spracované aj v strede.",
+        "Vo vode rozpustite cukor, pridajte zvyšnú rybaciu omáčku a limetkovú šťavu. Podávajte s ryžou a mrkvou; omáčku zabaľte oddelene."
+      ],
+      "reheating": "Rozmrazujte v chladničke. Hotové jedlo dôkladne prehrejte v celom objeme; pri ryži odporúčame jediný ohrev.",
+      "storage": "Rýchlo schlaďte v plytkých nádobách; ryžu ideálne do jednej hodiny. Skladujte zmrazené približne pri −18 °C. Predvolené odporúčanie pre kvalitu je 90 dní, nie univerzálna hranica bezpečnosti. Surové a hotové mäso označujte oddelene.",
+      "meat": "pork",
+      "freezing": true
+    },
+    {
+      "name": "Sticky chicken teriyaki",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Kuracie stehenné rezne",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "Ryža",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "Mrkva",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "Paprika",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "Strúčiky cesnaku",
+          "quantity": 2,
+          "unit": "ks"
+        },
+        {
+          "name": "Zázvor",
+          "quantity": 10,
+          "unit": "g"
+        },
+        {
+          "name": "Sójová omáčka",
+          "quantity": 35,
+          "unit": "ml"
+        },
+        {
+          "name": "Med",
+          "quantity": 20,
+          "unit": "g"
+        },
+        {
+          "name": "Kukuričný škrob",
+          "quantity": 8,
+          "unit": "g"
+        },
+        {
+          "name": "Voda",
+          "quantity": 60,
+          "unit": "ml"
+        },
+        {
+          "name": "Olej",
+          "quantity": 10,
+          "unit": "ml"
+        }
+      ],
+      "steps": [
+        "Uvarte ryžu. Kuracie mäso a zeleninu nakrájajte na kúsky.",
+        "Mäso orestujte na oleji a tepelne spracujte aj v strede. Pridajte mrkvu a papriku, krátko opečte.",
+        "Zmiešajte sójovú omáčku, med, nastrúhaný zázvor, cesnak a polovicu vody. Pridajte k mäsu.",
+        "Škrob rozmiešajte vo zvyšnej studenej vode, vlejte do panvice a prevarte do zhustnutia. Rozdeľte s ryžou."
+      ],
+      "reheating": "Rozmrazujte v chladničke. Hotové jedlo dôkladne prehrejte v celom objeme; pri ryži odporúčame jediný ohrev.",
+      "storage": "Rýchlo schlaďte v plytkých nádobách; ryžu ideálne do jednej hodiny. Skladujte zmrazené približne pri −18 °C. Predvolené odporúčanie pre kvalitu je 90 dní, nie univerzálna hranica bezpečnosti. Surové a hotové mäso označujte oddelene.",
+      "meat": "chicken",
+      "freezing": true
+    },
+    {
+      "name": "Poctivý hovädzí guláš",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Hovädzia kližka",
+          "quantity": 700,
+          "unit": "g"
+        },
+        {
+          "name": "Cibuľa",
+          "quantity": 350,
+          "unit": "g"
+        },
+        {
+          "name": "Strúčiky cesnaku",
+          "quantity": 3,
+          "unit": "ks"
+        },
+        {
+          "name": "Paradajkový pretlak",
+          "quantity": 25,
+          "unit": "g"
+        },
+        {
+          "name": "Sladká paprika",
+          "quantity": 18,
+          "unit": "g"
+        },
+        {
+          "name": "Celá rasca",
+          "quantity": 2,
+          "unit": "g"
+        },
+        {
+          "name": "Majorán",
+          "quantity": 2,
+          "unit": "g"
+        },
+        {
+          "name": "Hovädzí vývar",
+          "quantity": 500,
+          "unit": "ml"
+        },
+        {
+          "name": "Olej",
+          "quantity": 15,
+          "unit": "ml"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 4,
+          "unit": "g"
+        },
+        {
+          "name": "Čierne korenie",
+          "quantity": 1,
+          "unit": "g"
+        },
+        {
+          "name": "Suché cestoviny",
+          "quantity": 160,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Cibuľu nakrájajte a pomaly opečte na oleji dozlatista.",
+        "Pridajte hovädzie kocky a opečte. Vmiešajte pretlak a rascu. Odstavte z prudkého ohňa, pridajte papriku a krátko premiešajte bez spálenia.",
+        "Zalejte vývarom, pridajte cesnak, soľ a korenie. Zakryté pomaly duste približne 2–3 hodiny do mäkka; podľa potreby dopĺňajte vodu.",
+        "Na konci pridajte majorán a upravte hustotu odparením. Cestoviny uvarte podľa návodu a zabaľte oddelene."
+      ],
+      "reheating": "Rozmrazujte v chladničke. Hotové jedlo dôkladne prehrejte v celom objeme; pri ryži odporúčame jediný ohrev.",
+      "storage": "Rýchlo schlaďte v plytkých nádobách; ryžu ideálne do jednej hodiny. Skladujte zmrazené približne pri −18 °C. Predvolené odporúčanie pre kvalitu je 90 dní, nie univerzálna hranica bezpečnosti. Surové a hotové mäso označujte oddelene.",
+      "meat": "beef",
+      "freezing": true
+    },
+    {
+      "name": "Krkovičkové rezne",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Bravčová krkovička",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "Hladká múka",
+          "quantity": 50,
+          "unit": "g"
+        },
+        {
+          "name": "Vajcia",
+          "quantity": 2,
+          "unit": "ks"
+        },
+        {
+          "name": "Strúhanka",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "Olej na vyprážanie",
+          "quantity": 100,
+          "unit": "ml"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 4,
+          "unit": "g"
+        },
+        {
+          "name": "Čierne korenie",
+          "quantity": 1,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Mäso nakrájajte na plátky, jemne naklepte, osoľte a okoreňte.",
+        "Postupne obaľte v múke, rozšľahaných vajciach a strúhanke.",
+        "Pre surové zásoby ukladajte oddelené rezne na tácku, zmrazte a potom zabaľte s jasným označením SUROVÉ. Takéto balenie nesmie byť označené ako hotové jedlo.",
+        "Pre hotové porcie vyprážajte v primerane rozohriatom oleji z oboch strán a úplne tepelne spracujte stred mäsa. Nechajte odkvapkať. Množstvo absorbovaného oleja je neznáme."
+      ],
+      "reheating": "Rozmrazujte v chladničke. Hotové jedlo dôkladne prehrejte v celom objeme; ryžu prehrejte len raz. Surové rezne najprv úplne tepelne spracujte.",
+      "storage": "Rýchlo schlaďte v plytkých nádobách; ryžu ideálne do jednej hodiny. Skladujte zmrazené približne pri −18 °C. Predvolené odporúčanie pre kvalitu je 90 dní, nie univerzálna hranica bezpečnosti. Surové a hotové mäso označujte oddelene.",
+      "meat": "pork",
+      "freezing": true
+    },
+    {
+      "name": "Sticky ginger pork",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Bravčové pliecko",
+          "quantity": 520,
+          "unit": "g"
+        },
+        {
+          "name": "Jazmínová ryža",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "Cvikla",
+          "quantity": 250,
+          "unit": "g"
+        },
+        {
+          "name": "Cibuľa",
+          "quantity": 120,
+          "unit": "g"
+        },
+        {
+          "name": "Strúčiky cesnaku",
+          "quantity": 2,
+          "unit": "ks"
+        },
+        {
+          "name": "Zázvor",
+          "quantity": 20,
+          "unit": "g"
+        },
+        {
+          "name": "Sójová omáčka",
+          "quantity": 35,
+          "unit": "ml"
+        },
+        {
+          "name": "Rybacia omáčka",
+          "quantity": 10,
+          "unit": "ml"
+        },
+        {
+          "name": "Med",
+          "quantity": 20,
+          "unit": "g"
+        },
+        {
+          "name": "Vývar",
+          "quantity": 200,
+          "unit": "ml"
+        },
+        {
+          "name": "Jablčný ocot",
+          "quantity": 15,
+          "unit": "ml"
+        },
+        {
+          "name": "Olej",
+          "quantity": 10,
+          "unit": "ml"
+        }
+      ],
+      "steps": [
+        "Cviklu nakrájajte a upečte zakrytú pri 190 °C do mäkka. Ryžu prepláchnite a uvarte.",
+        "Mäso nakrájajte na kúsky, opečte na oleji. Pridajte cibuľu, cesnak a zázvor a krátko restujte.",
+        "Pridajte sójovú a rybaciu omáčku, med, ocot a vývar. Zakryté pomaly duste približne 60–90 minút do mäkka.",
+        "Odkryte a zredukujte omáčku na lesklú glazúru. Rozdeľte s ryžou a cviklou."
+      ],
+      "reheating": "Rozmrazujte v chladničke. Hotové jedlo dôkladne prehrejte v celom objeme; pri ryži odporúčame jediný ohrev.",
+      "storage": "Rýchlo schlaďte v plytkých nádobách; ryžu ideálne do jednej hodiny. Skladujte zmrazené približne pri −18 °C. Predvolené odporúčanie pre kvalitu je 90 dní, nie univerzálna hranica bezpečnosti. Surové a hotové mäso označujte oddelene.",
+      "meat": "pork",
+      "freezing": true
+    },
+    {
+      "name": "Hovädzie chilli con carne",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Mleté hovädzie",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "Ryža",
+          "quantity": 120,
+          "unit": "g"
+        },
+        {
+          "name": "Mrkva",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "Paprika",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "Cibuľa",
+          "quantity": 140,
+          "unit": "g"
+        },
+        {
+          "name": "Strúčiky cesnaku",
+          "quantity": 2,
+          "unit": "ks"
+        },
+        {
+          "name": "Passata",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "Scedené červené fazule",
+          "quantity": 240,
+          "unit": "g"
+        },
+        {
+          "name": "Scedená kukurica",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "Údená paprika",
+          "quantity": 4,
+          "unit": "g"
+        },
+        {
+          "name": "Rímska rasca",
+          "quantity": 2,
+          "unit": "g"
+        },
+        {
+          "name": "Jemné chilli",
+          "quantity": 1,
+          "unit": "g"
+        },
+        {
+          "name": "Voda",
+          "quantity": 150,
+          "unit": "ml"
+        },
+        {
+          "name": "Olej",
+          "quantity": 10,
+          "unit": "ml"
+        }
+      ],
+      "steps": [
+        "Ryžu prepláchnite a uvarte. Nakrájajte zeleninu.",
+        "Na oleji opečte cibuľu, pridajte mäso a rozdeľte na malé kúsky. Opekajte až do úplného tepelného spracovania.",
+        "Pridajte mrkvu, papriku, cesnak a koreniny, krátko restujte. Zalejte passatou a vodou, duste približne 25 minút.",
+        "Pridajte scedené fazule a kukuricu, ďalších 10 minút prevarte. Rozdeľte s ryžou."
+      ],
+      "reheating": "Rozmrazujte v chladničke. Hotové jedlo dôkladne prehrejte v celom objeme; pri ryži odporúčame jediný ohrev.",
+      "storage": "Rýchlo schlaďte v plytkých nádobách; ryžu ideálne do jednej hodiny. Skladujte zmrazené približne pri −18 °C. Predvolené odporúčanie pre kvalitu je 90 dní, nie univerzálna hranica bezpečnosti. Surové a hotové mäso označujte oddelene.",
+      "meat": "beef",
+      "freezing": true
+    },
+    {
+      "name": "Jazmínová ryža",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Jazmínová ryža",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "Voda",
+          "quantity": 250,
+          "unit": "ml"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 1,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Ryžu dôkladne prepláchnite.",
+        "Zalejte vodou podľa návodu konkrétnej ryže, osoľte a zakryté uvarte.",
+        "Odstavte, nechajte krátko dôjsť a prekyprite. Na uskladnenie ihneď rozložte do plytkých nádob."
+      ],
+      "reheating": "Rozmrazujte v chladničke a dôkladne prehrejte. Kašu miešajte a podľa potreby pridajte trochu tekutiny.",
+      "storage": "Rýchlo schlaďte; ryžu ideálne do jednej hodiny. Mrazte približne pri −18 °C. Odporúčanie 90 dní je pre kvalitu, nie univerzálna hranica bezpečnosti.",
+      "meat": "none",
+      "freezing": true
+    },
+    {
+      "name": "Hráškové pyré",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Hrášok",
+          "quantity": 400,
+          "unit": "g"
+        },
+        {
+          "name": "Maslo",
+          "quantity": 20,
+          "unit": "g"
+        },
+        {
+          "name": "Voda",
+          "quantity": 50,
+          "unit": "ml"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 2,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Hrášok krátko povarte do mäkka a sceďte.",
+        "Rozmixujte s maslom a podľa potreby pridajte vodu. Osoľte.",
+        "Rozdeľte do plytkých nádob alebo silikónových foriem."
+      ],
+      "reheating": "Rozmrazujte v chladničke a dôkladne prehrejte. Kašu miešajte a podľa potreby pridajte trochu tekutiny.",
+      "storage": "Rýchlo schlaďte; ryžu ideálne do jednej hodiny. Mrazte približne pri −18 °C. Odporúčanie 90 dní je pre kvalitu, nie univerzálna hranica bezpečnosti.",
+      "meat": "none",
+      "freezing": true
+    },
+    {
+      "name": "Maslová glazovaná mrkva",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Mrkva",
+          "quantity": 400,
+          "unit": "g"
+        },
+        {
+          "name": "Maslo",
+          "quantity": 20,
+          "unit": "g"
+        },
+        {
+          "name": "Med",
+          "quantity": 10,
+          "unit": "g"
+        },
+        {
+          "name": "Voda",
+          "quantity": 100,
+          "unit": "ml"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 2,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Mrkvu očistite a nakrájajte na rovnaké kúsky.",
+        "Na masle krátko opečte, pridajte vodu, med a soľ. Zakryté duste do mäkka.",
+        "Odkryte a odparte vodu tak, aby mrkvu pokryla glazúra."
+      ],
+      "reheating": "Rozmrazujte v chladničke a dôkladne prehrejte. Kašu miešajte a podľa potreby pridajte trochu tekutiny.",
+      "storage": "Rýchlo schlaďte; ryžu ideálne do jednej hodiny. Mrazte približne pri −18 °C. Odporúčanie 90 dní je pre kvalitu, nie univerzálna hranica bezpečnosti.",
+      "meat": "none",
+      "freezing": true
+    },
+    {
+      "name": "Pečená cvikla",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Cvikla",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "Olej",
+          "quantity": 10,
+          "unit": "ml"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 2,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Cviklu očistite a nakrájajte. Premiešajte s olejom a soľou.",
+        "Zakrytú pečte pri 190 °C približne 45–60 minút podľa veľkosti kúskov.",
+        "Skontrolujte mäkkosť a rozdeľte na porcie."
+      ],
+      "reheating": "Rozmrazujte v chladničke a dôkladne prehrejte. Kašu miešajte a podľa potreby pridajte trochu tekutiny.",
+      "storage": "Rýchlo schlaďte; ryžu ideálne do jednej hodiny. Mrazte približne pri −18 °C. Odporúčanie 90 dní je pre kvalitu, nie univerzálna hranica bezpečnosti.",
+      "meat": "none",
+      "freezing": true
+    },
+    {
+      "name": "Nakladaná cvikla",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Cvikla",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "Jablčný ocot",
+          "quantity": 100,
+          "unit": "ml"
+        },
+        {
+          "name": "Voda",
+          "quantity": 150,
+          "unit": "ml"
+        },
+        {
+          "name": "Cukor",
+          "quantity": 25,
+          "unit": "g"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 3,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Cviklu uvarte alebo upečte do mäkka, ošúpte a nakrájajte.",
+        "Vodu, ocot, cukor a soľ krátko prevarte.",
+        "V čistej nádobe zalejte cviklu nálevom, rýchlo schlaďte a uchovávajte v chladničke. Tento recept nie je postup na trvanlivé zaváranie."
+      ],
+      "reheating": "Podávajte studené. Uchovávajte stále v chladničke.",
+      "storage": "Uchovávajte v chladničke pri najviac 5 °C a spotrebujte čo najskôr. Nemrazte. Nejde o trvanlivú konzervu.",
+      "meat": "none",
+      "freezing": false
+    },
+    {
+      "name": "Zemiaková kaša",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Zemiaky",
+          "quantity": 600,
+          "unit": "g"
+        },
+        {
+          "name": "Maslo",
+          "quantity": 40,
+          "unit": "g"
+        },
+        {
+          "name": "Mlieko",
+          "quantity": 100,
+          "unit": "ml"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 3,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Ošúpané zemiaky nakrájajte a uvarte v osolenej vode do mäkka.",
+        "Sceďte a nechajte krátko odpariť. Roztlačte bez mixéra.",
+        "Vmiešajte maslo a teplé mlieko; upravte konzistenciu."
+      ],
+      "reheating": "Rozmrazujte v chladničke a dôkladne prehrejte. Kašu miešajte a podľa potreby pridajte trochu tekutiny.",
+      "storage": "Rýchlo schlaďte; ryžu ideálne do jednej hodiny. Mrazte približne pri −18 °C. Odporúčanie 90 dní je pre kvalitu, nie univerzálna hranica bezpečnosti.",
+      "meat": "none",
+      "freezing": true
+    },
+    {
+      "name": "Majonézový zemiakový šalát",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Zemiaky",
+          "quantity": 500,
+          "unit": "g"
+        },
+        {
+          "name": "Mrkva",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "Sterilizované uhorky",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "Hrášok",
+          "quantity": 50,
+          "unit": "g"
+        },
+        {
+          "name": "Majonéza",
+          "quantity": 80,
+          "unit": "g"
+        },
+        {
+          "name": "Horčica",
+          "quantity": 10,
+          "unit": "g"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 2,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Zemiaky v šupke a mrkvu uvarte do mäkka. Rýchlo schlaďte.",
+        "Zemiaky ošúpte a nakrájajte na kocky. Pridajte nakrájanú mrkvu, uhorky a hrášok.",
+        "Primiešajte majonézu, horčicu a soľ. Uchovávajte v chladničke; nemrazte."
+      ],
+      "reheating": "Podávajte studené. Uchovávajte stále v chladničke.",
+      "storage": "Uchovávajte v chladničke pri najviac 5 °C a spotrebujte čo najskôr. Nemrazte. Nejde o trvanlivú konzervu.",
+      "meat": "none",
+      "freezing": false
+    },
+    {
+      "name": "Hovädzia gulášová polievka",
+      "portions": 2,
+      "ingredients": [
+        {
+          "name": "Hovädzie mäso",
+          "quantity": 300,
+          "unit": "g"
+        },
+        {
+          "name": "Cibuľa",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "Zemiaky",
+          "quantity": 300,
+          "unit": "g"
+        },
+        {
+          "name": "Strúčiky cesnaku",
+          "quantity": 2,
+          "unit": "ks"
+        },
+        {
+          "name": "Sladká paprika",
+          "quantity": 10,
+          "unit": "g"
+        },
+        {
+          "name": "Rasca",
+          "quantity": 2,
+          "unit": "g"
+        },
+        {
+          "name": "Majorán",
+          "quantity": 2,
+          "unit": "g"
+        },
+        {
+          "name": "Vývar",
+          "quantity": 800,
+          "unit": "ml"
+        },
+        {
+          "name": "Olej",
+          "quantity": 10,
+          "unit": "ml"
+        },
+        {
+          "name": "Soľ",
+          "quantity": 3,
+          "unit": "g"
+        }
+      ],
+      "steps": [
+        "Na oleji opečte cibuľu a drobné kúsky mäsa. Pridajte rascu a mimo prudkého ohňa papriku.",
+        "Zalejte vývarom a pomaly varte do mäkka, podľa potreby doplňte vodu.",
+        "Pridajte kocky zemiakov, cesnak a soľ. Varte do mäkka. Na záver pridajte majorán."
+      ],
+      "reheating": "Rozmrazujte v chladničke a dôkladne prehrejte. Kašu miešajte a podľa potreby pridajte trochu tekutiny.",
+      "storage": "Rýchlo schlaďte; ryžu ideálne do jednej hodiny. Mrazte približne pri −18 °C. Odporúčanie 90 dní je pre kvalitu, nie univerzálna hranica bezpečnosti.",
+      "meat": "beef",
+      "freezing": true
+    }
+  ]
+}

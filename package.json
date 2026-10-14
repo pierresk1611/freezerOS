@@ -1,0 +1,63 @@
+{
+  "name": "freezeros",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "node scripts/test-e2e.mjs",
+    "db:start": "node scripts/start-local.mjs",
+    "db:reset": "node scripts/supabase-cli.mjs db reset",
+    "test:db": "node scripts/test-db.mjs",
+    "dev:local": "node scripts/dev-local.mjs",
+    "db:migrate": "node scripts/supabase-cli.mjs migration up --local",
+    "user:create": "node scripts/create-local-user.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pierresk1611/freezerOS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/pierresk1611/freezerOS/issues"
+  },
+  "homepage": "https://github.com/pierresk1611/freezerOS#readme",
+  "private": true,
+  "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.3",
+    "lucide-react": "^1.57.0",
+    "next": "^16.4.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-hook-form": "^7.90.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/pg": "^8.23.1",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.0",
+    "pg": "^8.23.1",
+    "prettier": "^3.9.10",
+    "supabase": "^2.120.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.4"
+  }
+}
