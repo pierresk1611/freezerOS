@@ -1,0 +1,485 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freezer-os.vercel.app/api/meal-preps/schema",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "freezeros.mealprep.v1",
+      "type": "string"
+    },
+    "importId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "days": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 14
+    },
+    "target_portions": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 500,
+      "description": "Cieľový počet hlavných porcií projektu. Prílohy nezvyšujú počet samostatných jedál."
+    },
+    "cooking_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "recipes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,49}$"
+          },
+          "recipe": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 160
+              },
+              "portions": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 100
+              },
+              "ingredients": {
+                "minItems": 1,
+                "maxItems": 100,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "quantity": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "maximum": 1000000
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "g",
+                        "ml",
+                        "ks"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "quantity",
+                    "unit"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "steps": {
+                "minItems": 1,
+                "maxItems": 100,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                }
+              },
+              "reheating": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "storage": {
+                "default": "Rýchlo schlaďte. Rozmrazujte v chladničke a dôkladne prehrejte.",
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "meat": {
+                "default": "none",
+                "type": "string",
+                "enum": [
+                  "none",
+                  "beef",
+                  "pork",
+                  "chicken",
+                  "other",
+                  "fish"
+                ]
+              },
+              "freezing": {
+                "default": true,
+                "type": "boolean"
+              },
+              "imageReferences": {
+                "type": "array",
+                "maxItems": 8,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "sourceUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "pattern": "^https://"
+                    },
+                    "alt": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 300
+                    },
+                    "author": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "license": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 300
+                    }
+                  },
+                  "required": [
+                    "sourceUrl",
+                    "alt",
+                    "author",
+                    "license"
+                  ]
+                }
+              },
+              "category": {
+                "enum": [
+                  "general",
+                  "slow_roasted_pulled_meat"
+                ]
+              },
+              "cooking_method": {
+                "enum": [
+                  "oven",
+                  "stove",
+                  "slow_roast"
+                ]
+              },
+              "prep_minutes": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1440
+              },
+              "cooking_minutes_min": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2880
+              },
+              "cooking_minutes_max": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2880
+              },
+              "oven_c": {
+                "type": "integer",
+                "minimum": 50,
+                "maximum": 300
+              },
+              "meal_role": {
+                "type": "string",
+                "enum": [
+                  "unknown",
+                  "main",
+                  "complete",
+                  "side",
+                  "vegetable_side",
+                  "component",
+                  "breakfast",
+                  "snack"
+                ]
+              },
+              "allowed_slots": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "breakfast",
+                    "lunch",
+                    "dinner",
+                    "snack"
+                  ]
+                },
+                "maxItems": 4,
+                "uniqueItems": true,
+                "minItems": 1
+              },
+              "side_policy": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "optional",
+                  "required"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "portions",
+              "ingredients",
+              "steps",
+              "reheating",
+              "storage",
+              "meat",
+              "freezing",
+              "meal_role",
+              "allowed_slots",
+              "side_policy"
+            ],
+            "additionalProperties": false
+          },
+          "planned_portions": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 100
+          },
+          "yield_g": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1000000,
+            "description": "Voliteľný odhad výslednej hmotnosti pôvodného receptu, nie potvrdené meranie. Neznáme vynechajte."
+          },
+          "active_minutes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1440
+          },
+          "allergens": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "maxItems": 30,
+            "description": "Deklarácia autora; prázdny zoznam nezaručuje neprítomnosť alergénov. Overte konkrétne produkty a krížovú kontamináciu."
+          },
+          "compatible_sides": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,49}$"
+            },
+            "maxItems": 8,
+            "description": "Lokálne key receptov s rolou side, vegetable_side alebo component. Nevymýšľajte databázové UUID."
+          },
+          "preservation": {
+            "type": "object",
+            "properties": {
+              "cooling": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "freezing": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "vacuuming": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "thawing": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "cooling",
+              "freezing",
+              "vacuuming",
+              "thawing"
+            ],
+            "additionalProperties": false
+          },
+          "portioning": {
+            "type": "object",
+            "properties": {
+              "mold_ml": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5000
+                },
+                "maxItems": 10,
+                "description": "Odporúčané objemy priehradiek v ml. Objem nikdy automaticky neprepočítavajte na hmotnosť v g."
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "cubes_per_package": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              }
+            },
+            "required": [
+              "mold_ml",
+              "description"
+            ],
+            "additionalProperties": false
+          },
+          "estimated_cost_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000,
+            "description": "Voliteľný AI odhad celkových nákladov pre planned_portions tohto riadku, v celých halieroch CZK. Nie je to zaplatený nákup ani skutočný Food Cost. Neznámu cenu vynechajte."
+          },
+          "notes": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "source_url": {
+            "type": "string",
+            "pattern": "^https://",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "key",
+          "recipe",
+          "planned_portions",
+          "allergens",
+          "compatible_sides",
+          "preservation",
+          "portioning"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 50,
+      "minItems": 1
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,49}$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "start_minute": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2880
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1440
+          },
+          "recipe_keys": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,49}$"
+            },
+            "maxItems": 50
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "start_minute",
+          "duration_minutes",
+          "recipe_keys"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 150
+    },
+    "meal_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "day_offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 13
+          },
+          "slot": {
+            "type": "string",
+            "enum": [
+              "breakfast",
+              "lunch",
+              "dinner",
+              "snack"
+            ]
+          },
+          "main": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,49}$"
+          },
+          "sides": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,49}$"
+            },
+            "maxItems": 8
+          },
+          "portions": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "day_offset",
+          "slot",
+          "main",
+          "sides",
+          "portions"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    }
+  },
+  "required": [
+    "format",
+    "importId",
+    "name",
+    "description",
+    "days",
+    "target_portions",
+    "cooking_date",
+    "recipes",
+    "timeline"
+  ],
+  "additionalProperties": false
+}

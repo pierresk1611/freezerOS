@@ -30,6 +30,7 @@ const statusLabels = {
 };
 export default function Shopping({
   recipes,
+  projectLinks,
   latest,
   available,
   initialPlans,
@@ -40,6 +41,7 @@ export default function Shopping({
   mealEntries,
   aliases,
 }: {
+  projectLinks: Record<string, string>;
   mealEntries: Meal[];
   aliases: Record<string, string>;
   recipes: PlanningRecipe[];
@@ -232,6 +234,10 @@ export default function Shopping({
             <button
               key={p.id}
               onClick={() => {
+                if (projectLinks[p.id]) {
+                  router.push("/meal-preps/" + projectLinks[p.id]);
+                  return;
+                }
                 setPlan(structuredClone(p));
                 setDirty(false);
                 setNeedsCalculation(false);

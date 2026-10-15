@@ -106,3 +106,9 @@ Nový finančný tok a konfigurácia rozpoznávania: [návod](docs/food-cost/REA
 Výber viacerých JSON súborov, kontrola duplicít a potvrdené nové verzie: [návod a aktivácia migrácie 008](docs/imports/README.md).
 
 Jedálniček, nákupy a špajza: [návod a aktivácia migrácie 009](docs/planning/README.md). [Stav overenia oficiálneho Rohlík MCP](docs/planning/rohlik-discovery.md).
+
+### Kulinársky planner a AI meal-prep projekty
+
+Nové additívne migrácie 010 a 011 vyžadujú samostatné schválenie pred aktiváciou v produkcii. Existujúce migrácie 001–009 sa nemenia. Postup kategorizácie a bezpečnej opravy týždňa: [docs/planning/culinary-010.md](docs/planning/culinary-010.md).
+
+**Viac → Meal prepy → Importovať od AI** načíta celý projekt s receptmi, harmonogramom a mrazením. Používa existujúci nákupný engine a knižnicu receptov; fyzické zásoby vznikajú až samostatným potvrdením skutočnej várky. Formát, oficiálna runtime JSON schéma a trojreceptový príklad sú v [docs/meal-prep-import.md](docs/meal-prep-import.md). Pripravené zadanie je v [docs/meal-prep-import.prompt.txt](docs/meal-prep-import.prompt.txt).

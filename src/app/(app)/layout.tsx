@@ -39,6 +39,7 @@ export default async function AppLayout({
           {[
             ...links,
             { href: "/meal-plan", label: "Jedálniček", icon: CalendarDays },
+            { href: "/meal-preps", label: "Meal prepy", icon: Layers },
             { href: "/shopping", label: "Nákupy", icon: ShoppingBasket },
             { href: "/food-cost", label: "Food Cost", icon: Wallet },
           ].map((x) => (

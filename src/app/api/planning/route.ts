@@ -234,23 +234,25 @@ export async function POST(req: NextRequest) {
       {
         error: message.includes("REVISION_CONFLICT")
           ? "Plán medzitým niekto zmenil. Obnovte stránku."
-          : message.includes("LINKED_SHOPPING")
-            ? "Jedlo je spojené s nákupom. Vymeňte recept pri zachovaní záznamu; nákup zostane na kontrolu."
-            : message.includes("GROUPED_MEAL")
-              ? "Kombinované jedlo upravte v jedálničku. Nákup synchronizujte až po kontrole."
-              : message.includes("Insufficient known freezer")
-                ? "Na tento týždeň nemáte dosť preukázaných hotových porcií. Upravte zdroj jedla."
-                : message.includes("overallocated")
-                  ? "Plánovaná várka nepokryje všetky jedlá. Zväčšite várku alebo upravte porcie."
-                  : message.includes("Side required")
-                    ? "Toto hlavné jedlo vyžaduje potvrdenú prílohu."
-                    : message.includes("Invalid planned batch") ||
-                        message.includes("Invalid linked batch") ||
-                        message.includes("Invalid side batch")
-                      ? "Várka musí patriť rovnakému receptu a byť pripravená najneskôr v deň konzumácie."
-                      : message.includes("PGRST202")
-                        ? "Najprv aktivujte migráciu 010. Nič nebolo uložené."
-                        : message,
+          : message.includes("PROJECT_USE_MEAL_PREP")
+            ? "Tento nákup patrí meal-prep projektu. Upravte ho v sekcii Meal prepy, aby recepty a nákup zostali zosúladené."
+            : message.includes("LINKED_SHOPPING")
+              ? "Jedlo je spojené s nákupom. Vymeňte recept pri zachovaní záznamu; nákup zostane na kontrolu."
+              : message.includes("GROUPED_MEAL")
+                ? "Kombinované jedlo upravte v jedálničku. Nákup synchronizujte až po kontrole."
+                : message.includes("Insufficient known freezer")
+                  ? "Na tento týždeň nemáte dosť preukázaných hotových porcií. Upravte zdroj jedla."
+                  : message.includes("overallocated")
+                    ? "Plánovaná várka nepokryje všetky jedlá. Zväčšite várku alebo upravte porcie."
+                    : message.includes("Side required")
+                      ? "Toto hlavné jedlo vyžaduje potvrdenú prílohu."
+                      : message.includes("Invalid planned batch") ||
+                          message.includes("Invalid linked batch") ||
+                          message.includes("Invalid side batch")
+                        ? "Várka musí patriť rovnakému receptu a byť pripravená najneskôr v deň konzumácie."
+                        : message.includes("PGRST202")
+                          ? "Najprv aktivujte migráciu 010. Nič nebolo uložené."
+                          : message,
       },
       { status: 400 },
     );

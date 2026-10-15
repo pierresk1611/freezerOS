@@ -34,6 +34,14 @@ export default async function Portioning({
   const [molds, recipes, batches, cubes, locations] = results.map(
     (r) => r.data ?? [],
   );
+  if (params.version && !recipes.some((r) => r.id === params.version)) {
+    const version = await client
+      .from("recipe_versions")
+      .select("id,name,freezing")
+      .eq("id", params.version)
+      .maybeSingle();
+    if (version.data?.freezing) recipes.push(version.data);
+  }
   const today = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Prague",
     year: "numeric",

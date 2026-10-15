@@ -53,9 +53,10 @@ export default async function Page({
     );
   for (const r of [choices, items, receipts, entries, aliases, allEntries])
     if (r.error) throw Error(r.error.message);
-  const [components, batches] = await Promise.all([
+  const [components, batches, projects] = await Promise.all([
     client.from("meal_plan_components").select("*").order("position"),
     client.from("planned_cooking_batches").select("*"),
+    client.from("meal_prep_projects").select("id,shopping_plan_id"),
   ]);
   const withComponents = (rows: typeof entries.data) =>
     (rows ?? []).map((e) => ({
@@ -64,6 +65,9 @@ export default async function Page({
     }));
   return (
     <Shopping
+      projectLinks={Object.fromEntries(
+        (projects.data ?? []).map((p) => [p.shopping_plan_id, p.id]),
+      )}
       recipes={recipes}
       latest={latest}
       available={available}

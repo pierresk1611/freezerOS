@@ -509,3 +509,5 @@ await import("./test-import-migration.mjs");
 await import("./test-planning.mjs");
 
 await import("./test-culinary-planning.mjs");
+
+await import("./test-meal-prep.mjs");

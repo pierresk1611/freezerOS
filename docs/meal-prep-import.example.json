@@ -1,0 +1,297 @@
+{
+  "format": "freezeros.mealprep.v1",
+  "importId": "ce8f67c4-5af7-4db9-aac5-47ff2cff6a11",
+  "name": "Trhané bravčové a dve prílohy",
+  "description": "Editovateľný plán na dve jedlá a zvyšok do mrazničky. Ceny a výživové hodnoty nie sú známe. Zoznam alergénov je iba deklarácia autora, overte etikety použitých výrobkov.",
+  "days": 7,
+  "target_portions": 6,
+  "cooking_date": "2026-10-18",
+  "recipes": [
+    {
+      "key": "pork",
+      "recipe": {
+        "name": "Sticky Ginger Pulled Pork",
+        "portions": 6,
+        "ingredients": [
+          {
+            "name": "Bravčové pliecko",
+            "quantity": 1500,
+            "unit": "g"
+          },
+          {
+            "name": "Sójová omáčka",
+            "quantity": 90,
+            "unit": "ml"
+          },
+          {
+            "name": "Rybacia omáčka",
+            "quantity": 30,
+            "unit": "ml"
+          },
+          {
+            "name": "Med",
+            "quantity": 70,
+            "unit": "g"
+          },
+          {
+            "name": "Čerstvý zázvor",
+            "quantity": 60,
+            "unit": "g"
+          },
+          {
+            "name": "Cesnak",
+            "quantity": 30,
+            "unit": "g"
+          },
+          {
+            "name": "Cibuľa",
+            "quantity": 250,
+            "unit": "g"
+          },
+          {
+            "name": "Vývar",
+            "quantity": 350,
+            "unit": "ml"
+          },
+          {
+            "name": "Jablčný ocot",
+            "quantity": 40,
+            "unit": "ml"
+          },
+          {
+            "name": "Olej",
+            "quantity": 15,
+            "unit": "ml"
+          },
+          {
+            "name": "Jazmínová ryža (suchá, podávaná samostatne)",
+            "quantity": 450,
+            "unit": "g"
+          },
+          {
+            "name": "Kukurica, scedená",
+            "quantity": 400,
+            "unit": "g"
+          }
+        ],
+        "steps": [
+          "Rúru predhrejte na 150 °C (horný/dolný ohrev). Cibuľu nakrájajte, cesnak a zázvor nasekajte. Mäso osušte; prílohy zatiaľ nechajte oddelené.",
+          "Zmiešajte sójovú a rybaciu omáčku, med, ocot, vývar a olej. Pliecko vložte do nádoby, obložte cibuľou, cesnakom a zázvorom a zalejte.",
+          "Nádobu tesne zakryte pokrievkou alebo fóliou. Pečte pri 145–155 °C orientačne 4–5 hodín. Priebežne kontrolujte tekutinu; podľa potreby pridajte vodu, aby sa základ nepripálil.",
+          "Mäso musí byť prepečené a vidlička sa doň musí zasúvať bez výrazného odporu. Samotný čas nie je dôkazom hotového jedla; tuhé mäso pečte dlhšie pod pokrievkou.",
+          "Vyberte mäso. Zo šťavy odoberte podľa chuti časť tuku. Výpek krátko redukujte na sporáku; priebežne ochutnávajte, aby nebol príliš slaný.",
+          "Natrhajte mäso dvoma vidličkami, odstráňte veľké tuhé časti a premiešajte s primeraným množstvom šťavy.",
+          "Ryžu prepláchnite a uvarte podľa návodu konkrétneho balenia. Scedenú kukuricu krátko prehrejte; podávajte ako samostatné prílohy.",
+          "Odvážte skutočný výťažok mäsa so šťavou bez samostatných príloh. Rozdeľte ho do plytkých nádob na rýchle chladenie a po schladení naplňte formy; objem a hmotnosť merajte zvlášť."
+        ],
+        "meat": "pork",
+        "freezing": true,
+        "category": "slow_roasted_pulled_meat",
+        "cooking_method": "slow_roast",
+        "prep_minutes": 25,
+        "cooking_minutes_min": 240,
+        "cooking_minutes_max": 300,
+        "oven_c": 150,
+        "storage": "Hotové mäso so šťavou rýchlo schlaďte v plytkých menších nádobách a uložte do chladničky pri najviac 5 °C do dvoch hodín. Chladené jedlo spotrebujte do 48 hodín alebo ho včas zmrazte približne pri −18 °C. Do foriem dávajte až schladené mäso s primeraným množstvom šťavy; po úplnom zamrazení vyberte kocky a vákuujte. Zvoľte vlastný orientačný dátum zachovania kvality, nie univerzálny bezpečnostný limit. Ryžu chlaďte samostatne ideálne do jednej hodiny; chladenú ryžu spotrebujte do 24 hodín a ohrievajte najviac raz.",
+        "reheating": "Rozmrazujte v chladničke, nie na kuchynskej linke. Mäso so šťavou prehrejte prikryté v hrnci alebo mikrovlnnej rúre, podľa potreby pridajte trochu vody a premiešajte. Celá porcia vrátane stredu musí dosiahnuť aspoň 74 °C; overte čistým teplomerom. Ohrievajte iba množstvo určené na okamžitú konzumáciu, najviac raz. Ryžu a kukuricu prehrejte zvlášť, ryžu dôkladne aj v strede.",
+        "meal_role": "main",
+        "allowed_slots": [
+          "lunch",
+          "dinner"
+        ],
+        "side_policy": "optional"
+      },
+      "planned_portions": 6,
+      "allergens": [
+        "sója",
+        "ryby"
+      ],
+      "compatible_sides": [
+        "rice",
+        "mash"
+      ],
+      "preservation": {
+        "cooling": "Rozdeľte do plytkých nádob a čo najskôr schlaďte. Nenechávajte veľkú horúcu nádobu pomaly chladnúť pri izbovej teplote.",
+        "freezing": "Po schladení zamrazte v malých porciách približne pri −18 °C. Dátum označuje plán kvality, nie univerzálnu hranicu bezpečnosti.",
+        "vacuuming": "Pred použitím externej vákuovačky najprv zmrazte, najmä ak jedlo obsahuje šťavu. Pracujte čisto a rýchlo.",
+        "thawing": "Rozmrazujte v chladničke; pri ohreve postupujte podľa receptu."
+      },
+      "portioning": {
+        "mold_ml": [
+          250,
+          500
+        ],
+        "description": "Objem formy nie je hmotnosť. Skutočnú hmotnosť, počet kociek a porcií odmerajte až po uvarení."
+      }
+    },
+    {
+      "key": "rice",
+      "recipe": {
+        "name": "Jazmínová ryža",
+        "portions": 2,
+        "ingredients": [
+          {
+            "name": "Jazmínová ryža",
+            "quantity": 150,
+            "unit": "g"
+          },
+          {
+            "name": "Voda",
+            "quantity": 250,
+            "unit": "ml"
+          },
+          {
+            "name": "Soľ",
+            "quantity": 1,
+            "unit": "g"
+          }
+        ],
+        "steps": [
+          "Ryžu dôkladne prepláchnite.",
+          "Zalejte vodou podľa návodu konkrétnej ryže, osoľte a zakryté uvarte.",
+          "Odstavte, nechajte krátko dôjsť a prekyprite. Na uskladnenie ihneď rozložte do plytkých nádob."
+        ],
+        "reheating": "Rozmrazujte v chladničke alebo ohrievajte priamo zo zmrazeného stavu v mikrovlnke či prikrytom hrnci. Ryžu prehrejte iba raz, premiešajte a overte aspoň 74 °C v celom objeme; pri potrebe zvlhčite malým množstvom vody. Ihneď podávajte a znovu neodkladajte ohriate zvyšky.",
+        "storage": "Ryžu rozložte do plytkej nádoby a schlaďte ideálne do 1 hodiny; nenechávajte ju stáť vo vlažnom hrnci. V chladničke pri najviac 5 °C ju uchovávajte najviac 24 hodín pred ohrevom alebo ju po rýchlom schladení včas zmrazte pri približne −18 °C. Porcie označte dátumom varenia a prípadného zmrazenia. Ryžu ponechanú príliš dlho pri izbovej teplote alebo s neistou históriou skladovania nejedzte; opätovný ohrev nemusí odstrániť vzniknuté toxíny.",
+        "meat": "none",
+        "freezing": true,
+        "meal_role": "side",
+        "allowed_slots": [
+          "lunch",
+          "dinner"
+        ],
+        "side_policy": "none"
+      },
+      "planned_portions": 4,
+      "allergens": [],
+      "compatible_sides": [],
+      "preservation": {
+        "cooling": "Rozdeľte do plytkých nádob a rýchlo schlaďte; pri ryži ideálne do jednej hodiny.",
+        "freezing": "Po schladení zamrazte v malých porciách približne pri −18 °C. Dátum označuje plán kvality, nie univerzálnu hranicu bezpečnosti.",
+        "vacuuming": "Pred použitím externej vákuovačky najprv zmrazte, najmä ak jedlo obsahuje šťavu. Pracujte čisto a rýchlo.",
+        "thawing": "Rozmrazujte v chladničke; pri ohreve postupujte podľa receptu."
+      },
+      "portioning": {
+        "mold_ml": [
+          250,
+          500
+        ],
+        "description": "Objem formy nie je hmotnosť. Skutočnú hmotnosť, počet kociek a porcií odmerajte až po uvarení."
+      }
+    },
+    {
+      "key": "mash",
+      "recipe": {
+        "name": "Zemiaková kaša",
+        "portions": 2,
+        "ingredients": [
+          {
+            "name": "Zemiaky",
+            "quantity": 600,
+            "unit": "g"
+          },
+          {
+            "name": "Maslo",
+            "quantity": 40,
+            "unit": "g"
+          },
+          {
+            "name": "Mlieko",
+            "quantity": 100,
+            "unit": "ml"
+          },
+          {
+            "name": "Soľ",
+            "quantity": 3,
+            "unit": "g"
+          }
+        ],
+        "steps": [
+          "Ošúpané zemiaky nakrájajte a uvarte v osolenej vode do mäkka.",
+          "Sceďte a nechajte krátko odpariť. Roztlačte bez mixéra.",
+          "Vmiešajte maslo a teplé mlieko; upravte konzistenciu."
+        ],
+        "reheating": "Kašu rozmrazte v chladničke a na miernom ohni alebo v mikrovlnke dôkladne prehrejte aspoň na 74 °C v celom objeme. Priebežne miešajte a podľa potreby pridajte trochu mlieka použitého v recepte, aby sa nepripálila. Ohrievajte len porciu na konzumáciu.",
+        "storage": "Zemiakovú kašu s maslom a mliekom rýchlo porciujte do plytkých nádob. Rozdeľte do plytkých nádob a bez odkladu schlaďte. Do chladničky pri najviac 5 °C vložte najneskôr do 2 hodín od dovarenia; pri horúčave nad 32 °C do 1 hodiny. Chladené spotrebujte do 48 hodín alebo včas zmrazte pri približne −18 °C. Mrazte v menších uzavretých porciách. Po rozmrazení môže byť zrnitá alebo môže oddeliť tekutinu; ide o zmenu konzistencie, nie automatický dôkaz bezpečnosti.",
+        "meat": "none",
+        "freezing": true,
+        "meal_role": "side",
+        "allowed_slots": [
+          "lunch",
+          "dinner"
+        ],
+        "side_policy": "none"
+      },
+      "planned_portions": 2,
+      "allergens": [
+        "mlieko"
+      ],
+      "compatible_sides": [],
+      "preservation": {
+        "cooling": "Rozdeľte do plytkých nádob a čo najskôr schlaďte. Nenechávajte veľkú horúcu nádobu pomaly chladnúť pri izbovej teplote.",
+        "freezing": "Po schladení zamrazte v malých porciách približne pri −18 °C. Dátum označuje plán kvality, nie univerzálnu hranicu bezpečnosti.",
+        "vacuuming": "Pred použitím externej vákuovačky najprv zmrazte, najmä ak jedlo obsahuje šťavu. Pracujte čisto a rýchlo.",
+        "thawing": "Rozmrazujte v chladničke; pri ohreve postupujte podľa receptu."
+      },
+      "portioning": {
+        "mold_ml": [
+          250,
+          500
+        ],
+        "description": "Objem formy nie je hmotnosť. Skutočnú hmotnosť, počet kociek a porcií odmerajte až po uvarení."
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "key": "start",
+      "label": "Pripravte mäso a vložte zakryté do rúry podľa receptu.",
+      "start_minute": 0,
+      "duration_minutes": 30,
+      "recipe_keys": [
+        "pork"
+      ]
+    },
+    {
+      "key": "sides",
+      "label": "Ku koncu pečenia pripravte ryžu a kašu podľa ich postupov.",
+      "start_minute": 210,
+      "duration_minutes": 45,
+      "recipe_keys": [
+        "rice",
+        "mash"
+      ]
+    },
+    {
+      "key": "cool",
+      "label": "Skontrolujte zmäknutie mäsa, rozporciujte a rýchlo schlaďte. Čas je orientačný.",
+      "start_minute": 300,
+      "duration_minutes": 30,
+      "recipe_keys": [
+        "pork",
+        "rice",
+        "mash"
+      ]
+    }
+  ],
+  "meal_plan": [
+    {
+      "day_offset": 1,
+      "slot": "lunch",
+      "main": "pork",
+      "sides": [
+        "rice"
+      ],
+      "portions": 2
+    },
+    {
+      "day_offset": 3,
+      "slot": "dinner",
+      "main": "pork",
+      "sides": [
+        "mash"
+      ],
+      "portions": 2
+    }
+  ]
+}

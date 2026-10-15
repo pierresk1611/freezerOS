@@ -10,6 +10,7 @@ export default function Page() {
           ["/food-cost/receipts/new", "Naskenovať účtenku"],
           ["/portioning", "Formy a porciovanie"],
           ["/meal-plan", "Jedálniček"],
+          ["/meal-preps", "Meal prepy"],
           ["/preferences", "Moje chute a účet"],
         ].map(([h, n]) => (
           <Link className="card" href={h} key={h}>
