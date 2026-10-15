@@ -9,7 +9,7 @@ test("obsahová oprava vytvorí novú verziu, zachová várku a chráni použív
   test.setTimeout(60000);
   const index = [360, 390, 768, 1280, 1440, 1536].indexOf(Number(info.project.name));
   const item = plan.items[index],
-    modified = plan.items[index + 5];
+    modified = plan.items[index + 6];
   const client = createClient(
     process.env.FREEZER_TEST_API_URL!,
     process.env.FREEZER_TEST_ANON_KEY!,
