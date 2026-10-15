@@ -502,3 +502,6 @@ await import("./test-photo-repair.mjs");
 
 await import("./test-food-cost.mjs");
 await import("./test-food-migration.mjs");
+
+await import("./test-recipe-import.mjs");
+await import("./test-import-migration.mjs");

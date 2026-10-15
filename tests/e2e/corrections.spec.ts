@@ -121,9 +121,32 @@ test("obsahová oprava vytvorí novú verziu, zachová várku a chráni použív
   expect(untouched.data.reheating).toBe(modified.before.reheating);
   await page.goto("/recipes/import");
   await page
-    .getByRole("button", { name: "Pridať 15 receptových šablón", exact: true })
+    .getByRole("button", {
+      name: "Zobraziť 15 predvolených šablón v náhľade",
+      exact: true,
+    })
     .click();
-  await expect(page).toHaveURL(/\/recipes\/corrections$/);
+  await expect(
+    page.getByRole("heading", { name: "Náhľad všetkých 15 receptov" }),
+  ).toBeVisible();
+  await expect(page.locator(".import-row.invalid")).toHaveCount(15);
+  await page
+    .getByRole("button", { name: "Importovať vybrané recepty", exact: true })
+    .click();
+  await expect(
+    page.getByRole("region", { name: "Výsledok importu" }),
+  ).toContainText("Pridané: 0");
+  await expect(
+    page.getByRole("region", { name: "Výsledok importu" }),
+  ).toContainText("Chybné: 15");
+  expect(
+    (await client.from("recipe_versions").select("id").eq("name", item.key))
+      .data,
+  ).toHaveLength(2);
+  expect(
+    (await client.from("recipe_versions").select("id").eq("name", modified.key))
+      .data,
+  ).toHaveLength(1);
   const requests = await client
     .from("operation_requests")
     .select("id")

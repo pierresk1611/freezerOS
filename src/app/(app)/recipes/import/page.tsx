@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { ImportEditor } from "../editor";
-import { importDefaults } from "../../actions";
 export default function ImportPage() {
   return (
     <div className="recipe-page recipe-editor-page">
@@ -26,13 +25,6 @@ export default function ImportPage() {
         <Link href="/recipes/corrections" className="button button-secondary">
           Skontrolovať skladovanie a zohrievanie
         </Link>
-      </section>
-      <section className="card">
-        <h2>Začnite obľúbenými jedlami</h2>
-        <p>15 editovateľných šablón. Rovnaká sada sa pridá iba raz.</p>
-        <form action={importDefaults}>
-          <button>Pridať 15 receptových šablón</button>
-        </form>
       </section>
     </div>
   );

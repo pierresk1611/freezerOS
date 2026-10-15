@@ -31,10 +31,27 @@ test("trhané mäso → formy → zmrazenie → tri rôzne balíčky → QR → 
       exact: true,
     }),
   ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Potvrdiť pridanie 4 receptov", exact: true })
-    .click();
-  await expect(page).toHaveURL(/\/recipes\?created=1/);
+  if (
+    await page
+      .getByRole("button", { name: "Pridať 4 recepty", exact: true })
+      .isVisible()
+  )
+    await page
+      .getByRole("button", { name: "Pridať 4 recepty", exact: true })
+      .click();
+  await expect(
+    page.getByRole("heading", { name: "4 recepty už boli pridané" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Pridať 4 recepty", exact: true }),
+  ).toHaveCount(0);
+  await page.goto("/recipes");
+  await expect(
+    page.getByRole("link", { name: "Trhané mäso", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Nové šablóny trhaného mäsa", exact: true }),
+  ).toHaveCount(0);
   await page
     .getByLabel("Kategória", { exact: true })
     .selectOption("slow_roasted_pulled_meat");

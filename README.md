@@ -100,3 +100,7 @@ Trhané mäso a vákuové kocky: [aktivácia migrácie 005 a celý workflow](doc
 ## Food Cost a účtenky
 
 Nový finančný tok a konfigurácia rozpoznávania: [návod](docs/food-cost/README.md). Cloudový projekt vyžaduje schválenú novú migráciu 007; existujúce nákladové snapshoty sa nemenia.
+
+## Hromadný import receptov
+
+Výber viacerých JSON súborov, kontrola duplicít a potvrdené nové verzie: [návod a aktivácia migrácie 008](docs/imports/README.md).

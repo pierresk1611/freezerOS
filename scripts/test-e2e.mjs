@@ -15,6 +15,9 @@ const { data, error } = await admin.auth.admin.createUser({
   email_confirm: true,
 });
 if (error) throw error;
+let legacyUser = null;
+const legacyEmail = `legacy-e2e-${randomUUID()}@freezer.test`,
+  legacyPassword = randomUUID() + "Aa1!";
 try {
   const fixture = createClient(config.API_URL, config.ANON_KEY, {
     auth: { persistSession: false },
@@ -30,6 +33,43 @@ try {
     p_recipes: corrections.items.map((item) => item.before),
   });
   if (imported.error) throw new Error("Legacy recipe fixture import failed");
+  const old = await admin.auth.admin.createUser({
+    email: legacyEmail,
+    password: legacyPassword,
+    email_confirm: true,
+  });
+  if (old.error) throw old.error;
+  legacyUser = old.data.user.id;
+  const legacy = createClient(config.API_URL, config.ANON_KEY, {
+    auth: { persistSession: false },
+  });
+  await legacy.auth.signInWithPassword({
+    email: legacyEmail,
+    password: legacyPassword,
+  });
+  const pulled = JSON.parse(readFileSync("docs/pulled-recipes.json", "utf8"));
+  const seeded = await legacy.rpc("import_recipes", {
+    p_import_id: pulled.importId,
+    p_recipes: pulled.payload,
+  });
+  if (seeded.error) throw seeded.error;
+  const first = (
+    await legacy
+      .from("recipe_versions")
+      .select("*")
+      .eq("name", pulled.payload[0].name)
+      .single()
+  ).data;
+  const revised = await legacy.rpc("revise_recipe", {
+    p_version_id: first.id,
+    p_request_id: randomUUID(),
+    p_recipe: {
+      ...pulled.payload[0],
+      name: "Moje upravené trhané bravčové",
+      steps: ["Používateľský postup zachovať."],
+    },
+  });
+  if (revised.error) throw revised.error;
   const result = spawnSync(
     "node_modules/.bin/playwright",
     ["test", ...process.argv.slice(2)],
@@ -43,6 +83,8 @@ try {
         FREEZER_TEST_ANON_KEY: config.ANON_KEY,
         FREEZER_TEST_EMAIL: email,
         FREEZER_TEST_PASSWORD: password,
+        FREEZER_LEGACY_EMAIL: legacyEmail,
+        FREEZER_LEGACY_PASSWORD: legacyPassword,
       },
     },
   );
@@ -64,6 +106,10 @@ try {
   }
   await removeFixtureFiles(data.user.id, "recipe-photos");
   await removeFixtureFiles(data.user.id, "purchase-receipts");
+  if (legacyUser) {
+    const deleted = await admin.auth.admin.deleteUser(legacyUser);
+    if (deleted.error) throw deleted.error;
+  }
   const result = await admin.auth.admin.deleteUser(data.user.id);
   if (result.error) throw result.error;
 }

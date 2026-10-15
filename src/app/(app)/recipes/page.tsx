@@ -15,11 +15,13 @@ import { recipeRecord, meatLabels } from "@/lib/recipes";
 import { loadRecipePhotos } from "@/lib/recipe-photos";
 import { RecipeMedia } from "./media";
 import { RecipeMenu } from "./menu";
+import { pulledImportState } from "@/lib/pulled-import";
 import { importDefaults } from "../actions";
 export default async function Recipes({
   searchParams,
 }: {
   searchParams: Promise<{
+    ids?: string;
     q?: string;
     meat?: string;
     freezing?: string;
@@ -33,10 +35,23 @@ export default async function Recipes({
 }) {
   const params = await searchParams;
   const { client } = await userDb();
-  const { data, error } = await client
-    .from("recipe_latest")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const pulled = await pulledImportState(client);
+  let recipeQuery = client.from("recipe_latest").select("*");
+  if (params.ids) {
+    const ids = params.ids.split(",");
+    if (
+      ids.length <= 200 &&
+      ids.every((id) =>
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+          id,
+        ),
+      )
+    )
+      recipeQuery = recipeQuery.in("recipe_id", ids);
+  }
+  const { data, error } = await recipeQuery.order("created_at", {
+    ascending: false,
+  });
   if (error) throw error;
   const photos = await loadRecipePhotos(
     client,
@@ -93,8 +108,15 @@ export default async function Recipes({
         </p>
       )}
       <div className="photo-actions">
-        <Link className="button button-secondary" href="/recipes/pulled">
-          Nové šablóny trhaného mäsa
+        <Link
+          className="button button-secondary"
+          href={
+            pulled.count === 4
+              ? "/recipes?category=slow_roasted_pulled_meat"
+              : "/recipes/pulled"
+          }
+        >
+          {pulled.count === 4 ? "Trhané mäso" : "Nové šablóny trhaného mäsa"}
         </Link>
         <Link href="/portioning" className="button button-secondary">
           Formy a porciovanie

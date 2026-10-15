@@ -15,8 +15,7 @@ import {
   Save,
   Check,
 } from "lucide-react";
-import { recipeSchema, importSchema } from "@/lib/domain";
-import { importRecipes } from "../actions";
+import { recipeSchema } from "@/lib/domain";
 import { saveRecipe, type SaveResult } from "./actions";
 const editorSchema = recipeSchema.omit({ steps: true }).extend({
   steps: z
@@ -450,82 +449,4 @@ export function RecipeEditor({
   );
 }
 
-export function ImportEditor() {
-  const [text, setText] = useState("");
-  const [message, setMessage] = useState("");
-  const [preview, setPreview] = useState<z.infer<typeof importSchema> | null>(
-    null,
-  );
-  function validate() {
-    try {
-      const result = importSchema.safeParse(JSON.parse(text));
-      if (!result.success) {
-        setMessage(
-          "Import nezodpovedá schéme 1.0. Skontrolujte povinné údaje.",
-        );
-        setPreview(null);
-      } else {
-        setPreview(result.data);
-        setMessage("");
-      }
-    } catch {
-      setMessage("JSON sa nepodarilo prečítať.");
-      setPreview(null);
-    }
-  }
-  return (
-    <div>
-      <label htmlFor="import-file">JSON súbor</label>
-      <input
-        id="import-file"
-        type="file"
-        accept=".json,application/json"
-        onChange={async (e) => {
-          const file = e.target.files?.[0];
-          if (file) {
-            if (file.size > 1000000) {
-              setMessage("Maximálna veľkosť je 1 MB.");
-              return;
-            }
-            setText(await file.text());
-            setPreview(null);
-          }
-        }}
-      />
-      <label htmlFor="import-json">JSON obálka</label>
-      <textarea
-        id="import-json"
-        value={text}
-        onChange={(e) => {
-          setText(e.target.value);
-          setPreview(null);
-        }}
-      />
-      <button onClick={validate} type="button">
-        Skontrolovať a zobraziť náhľad
-      </button>
-      {message && (
-        <p role="alert" className="error">
-          {message}
-        </p>
-      )}
-      {preview && (
-        <div className="card" style={{ marginTop: 16 }}>
-          <h2>Náhľad importu</h2>
-          <ul>
-            {preview.payload.map((r, i) => (
-              <li key={i}>
-                {r.name} · {r.portions} porcie · {r.ingredients.length} surovín
-              </li>
-            ))}
-          </ul>
-          <p>Zdroj: {preview.source}. Pred potvrdením môžete JSON upraviť.</p>
-          <form action={importRecipes}>
-            <input type="hidden" name="json" value={JSON.stringify(preview)} />
-            <button>Potvrdiť import {preview.payload.length} receptov</button>
-          </form>
-        </div>
-      )}
-    </div>
-  );
-}
+export { ImportBrowser as ImportEditor } from "./import/batch-browser";

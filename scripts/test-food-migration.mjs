@@ -22,7 +22,7 @@ try {
   const files = readdirSync("supabase/migrations")
     .filter((x) => x.endsWith(".sql"))
     .sort();
-  for (const f of files.filter((x) => !x.includes("007")))
+  for (const f of files.filter((x) => x < "202610140007_food_cost.sql"))
     await db.query(readFileSync("supabase/migrations/" + f, "utf8"));
   const before = (
     await db.query(
