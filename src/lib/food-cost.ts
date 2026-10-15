@@ -16,6 +16,8 @@ export const categories = {
   sauces: "Omáčky",
   spices: "Koreniny",
   food: "Ostatné potraviny",
+  alcohol: "Alkohol",
+  drugstore: "Drogéria",
   equipment: "Nepotravinový tovar",
   fees: "Doprava a poplatky",
 } as const;
@@ -31,6 +33,8 @@ export function normalizeName(v: string) {
 export function suggestCategory(v: string): Category {
   const n = normalizeName(v);
   for (const [c, re] of Object.entries({
+    alcohol: /\b(vino|pivo|vodka|rum|whisky|whiskey|alkohol)\b/,
+    drugstore: /praci|praci gel|avivaz|mydlo|sampon|cistic|toalet/,
     beef: /hove|hovad/,
     pork: /vepr|brav|krkov|plec/,
     chicken: /kurac|kure/,

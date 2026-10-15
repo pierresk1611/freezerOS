@@ -157,7 +157,7 @@ export default async function Page({
   );
   const total = items.reduce((s, i) => s + Number(i.total_minor), 0);
   const food = items
-    .filter((i) => !["equipment", "fees"].includes(i.category))
+    .filter((i) => !["equipment", "fees", "alcohol", "drugstore"].includes(i.category))
     .reduce((s, i) => s + Number(i.total_minor), 0);
   const perCategory = Object.keys(categories)
     .map((c) => ({
@@ -215,7 +215,7 @@ export default async function Page({
   const monthlyFood = confirmed
     .filter((r) => r.receipt_date.startsWith(month))
     .flatMap((r) => r.purchase_receipt_items)
-    .filter((i: ReceiptItem) => !["equipment", "fees"].includes(i.category))
+    .filter((i: ReceiptItem) => !["equipment", "fees", "alcohol", "drugstore"].includes(i.category))
     .reduce((s, i) => s + Number(i.total_minor), 0);
   const budgetPercent =
     budgets.data && Number(budgets.data.amount_minor) > 0
@@ -613,7 +613,7 @@ export default async function Page({
                 .flatMap((r) => r.purchase_receipt_items)
                 .filter(
                   (i: ReceiptItem) =>
-                    !["equipment", "fees"].includes(i.category),
+                    !["equipment", "fees", "alcohol", "drugstore"].includes(i.category),
                 )
                 .reduce((s, i) => s + Number(i.total_minor), 0),
             )}
@@ -628,7 +628,7 @@ export default async function Page({
                     .flatMap((r) => r.purchase_receipt_items)
                     .filter(
                       (i: ReceiptItem) =>
-                        !["equipment", "fees"].includes(i.category),
+                        !["equipment", "fees", "alcohol", "drugstore"].includes(i.category),
                     )
                     .reduce((s, i) => s + Number(i.total_minor), 0),
               )}

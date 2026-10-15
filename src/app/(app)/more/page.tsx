@@ -6,6 +6,7 @@ export default function Page() {
       <div className="food-kpis">
         {[
           ["/food-cost", "Food Cost"],
+          ["/shopping", "Nákupy a špajza"],
           ["/food-cost/receipts/new", "Naskenovať účtenku"],
           ["/portioning", "Formy a porciovanie"],
           ["/meal-plan", "Jedálniček"],

@@ -242,3 +242,10 @@ it("recipe estimate uses only matching units and confirmed mapped prices", () =>
     estimateRecipeCost([ingredient], [{ ...row, total_minor: -100 }]),
   ).toMatchObject({ unknown: true });
 });
+
+it("alcohol and drugstore suggestions do not mistake rumsteak or vinegar", () => {
+  expect(suggestCategory("Červené víno")).toBe("alcohol");
+  expect(suggestCategory("Prací gél")).toBe("drugstore");
+  expect(suggestCategory("Hovězí rumsteak")).toBe("beef");
+  expect(suggestCategory("Jablčný ocot")).not.toBe("alcohol");
+});

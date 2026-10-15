@@ -9,6 +9,8 @@ import {
   Layers,
   MoreHorizontal,
   Wallet,
+  CalendarDays,
+  ShoppingBasket,
 } from "lucide-react";
 import { logout } from "../login/actions";
 const links = [
@@ -36,6 +38,8 @@ export default async function AppLayout({
         <nav>
           {[
             ...links,
+            { href: "/meal-plan", label: "Jedálniček", icon: CalendarDays },
+            { href: "/shopping", label: "Nákupy", icon: ShoppingBasket },
             { href: "/food-cost", label: "Food Cost", icon: Wallet },
           ].map((x) => (
             <a href={x.href} key={x.href}>

@@ -104,3 +104,5 @@ Nový finančný tok a konfigurácia rozpoznávania: [návod](docs/food-cost/REA
 ## Hromadný import receptov
 
 Výber viacerých JSON súborov, kontrola duplicít a potvrdené nové verzie: [návod a aktivácia migrácie 008](docs/imports/README.md).
+
+Jedálniček, nákupy a špajza: [návod a aktivácia migrácie 009](docs/planning/README.md). [Stav overenia oficiálneho Rohlík MCP](docs/planning/rohlik-discovery.md).
