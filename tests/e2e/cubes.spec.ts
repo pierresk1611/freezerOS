@@ -262,13 +262,19 @@ test("trhané mäso → formy → zmrazenie → tri rôzne balíčky → QR → 
     .click();
   await expect(page.getByText("Preferencie boli uložené.")).toBeVisible();
   await page.goto("/meal-plan");
-  await page.getByRole("button", { name: "Pridať jedlo", exact: true }).click();
-  await page.getByLabel("Recept", { exact: true }).selectOption(source.data.id);
   await page
-    .getByRole("button", { name: "Potvrdiť jedlo", exact: true })
+    .getByRole("button", { name: "+ Pridať", exact: true })
+    .first()
+    .click();
+  await page.getByLabel("Manuálny výber", { exact: false }).check();
+  await page
+    .getByLabel("Hlavné jedlo", { exact: true })
+    .selectOption(source.data.id);
+  await page
+    .getByRole("button", { name: "Potvrdiť výmenu a uložiť", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Jedálniček", exact: true }),
+    page.getByRole("heading", { name: "Váš jedálniček", exact: true }),
   ).toBeVisible();
   expect(
     await page.evaluate(

@@ -1,4 +1,6 @@
 "use client";
+import { shoppingFromMeals } from "@/lib/culinary-planning";
+import type { PlannedBatch } from "@/lib/planning";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -34,6 +36,7 @@ export default function Shopping({
   pantry,
   receipts,
   weekEntries,
+  batches,
   mealEntries,
   aliases,
 }: {
@@ -59,6 +62,7 @@ export default function Shopping({
     }[];
   }[];
   weekEntries: Meal[];
+  batches: PlannedBatch[];
 }) {
   const router = useRouter();
   const [plan, storePlan] = useState<ShoppingPlan | null>(null),
@@ -158,16 +162,7 @@ export default function Shopping({
       name: fromWeek ? "Nákup z jedálnička" : "Meal prep nákup",
       status: "draft",
       recipes: fromWeek
-        ? weekEntries.map((e) => ({
-            id: crypto.randomUUID(),
-            recipe_version_id: e.recipe_version_id,
-            portions: Math.max(
-              Number(e.portions),
-              Number(e.batch_portions ?? 0),
-            ),
-            from_freezer: Number(e.ready_portions ?? 0),
-            meal_entry_id: e.id,
-          }))
+        ? shoppingFromMeals(weekEntries, batches, () => crypto.randomUUID())
         : [],
       items: [],
     });
@@ -205,6 +200,14 @@ export default function Shopping({
     <div className="recipe-page">
       <header>
         <p className="eyebrow">Od plánu k nákupu</p>
+        {initialPlans.some((p) => p.planner_review_required) && (
+          <p role="status" className="card">
+            Jedálniček sa zmenil. Existujúce nákupy a potvrdené doklady zostali
+            zachované. Pred ďalším nákupom vytvorte nový návrh z týždňa a
+            porovnajte ho s pôvodným; pri odoslaných plánoch vytvorte doplnkový
+            nákup.
+          </p>
+        )}
         <h1>Nákupy a špajza</h1>
         <p>
           Požiadavky z receptov, skutočné domáce suroviny a potvrdené nákupy

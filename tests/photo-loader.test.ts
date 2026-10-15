@@ -59,3 +59,23 @@ it("does not disguise unrelated database failures as missing migrations", async 
     ]),
   ).rejects.toMatchObject({ code: "42501" });
 });
+it("bounds photo queries for a large imported library without dropping recipes", async () => {
+  const calls: string[][] = [];
+  const client = {
+    from: () => ({
+      select: () => ({
+        in: (_key: string, ids: string[]) => {
+          calls.push(ids);
+          return {
+            order: () => ({ order: async () => ({ error: null, data: [] }) }),
+          };
+        },
+      }),
+    }),
+  } as unknown as SupabaseClient;
+  const ids = Array.from({ length: 350 }, () => crypto.randomUUID());
+  await loadRecipePhotos(client, [...ids, ids[0]]);
+  expect(calls).toHaveLength(4);
+  expect(calls.every((c) => c.length <= 100)).toBe(true);
+  expect(calls.flat()).toEqual(ids);
+});

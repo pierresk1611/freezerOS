@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { planningMetadata } from "./meal-roles";
 import { imageReferenceSchema } from "./photo-rules";
 export const ingredientSchema = z.object({
   name: z.string().trim().min(1).max(120),
@@ -6,6 +7,7 @@ export const ingredientSchema = z.object({
   unit: z.enum(["g", "ml", "ks"]),
 });
 export const recipeSchema = z.object({
+  ...planningMetadata,
   name: z.string().trim().min(2).max(160),
   portions: z.number().int().positive().max(100),
   ingredients: z.array(ingredientSchema).min(1).max(100),

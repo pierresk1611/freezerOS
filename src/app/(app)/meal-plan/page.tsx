@@ -12,37 +12,46 @@ export default async function Page({
   );
   const { client, recipes, latest, available, recent, quality } =
     await planningData();
-  const entries = await client
-    .from("meal_plan_entries")
-    .select("*")
-    .gte("meal_date", start)
-    .lte("meal_date", addDays(start, 6));
+  const [entries, components, batches, links, settings] = await Promise.all([
+    client
+      .from("meal_plan_entries")
+      .select("*")
+      .gte("meal_date", addDays(start, -7))
+      .lte("meal_date", addDays(start, 6)),
+    client.from("meal_plan_components").select("*").order("position"),
+    client.from("planned_cooking_batches").select("*"),
+    client.from("shopping_plan_recipes").select("meal_entry_id"),
+    client.from("planner_settings").select("settings").maybeSingle(),
+  ]);
   if (entries.error) throw Error(entries.error.message);
-  const ready = await client.from("shopping_plans").select("id").limit(1);
-  const settings = await client
-    .from("planner_settings")
-    .select("settings,revision")
-    .maybeSingle();
-  const previous = await client
-    .from("meal_plan_entries")
-    .select("*")
-    .gte("meal_date", addDays(start, -7))
-    .lte("meal_date", addDays(start, -1));
+  if (settings.error && !components.error)
+    throw Error("Nastavenia obmedzení sa nepodarilo načítať. Skúste znova.");
+  const hardBans: unknown = settings.data?.settings?.banned;
+  if (
+    hardBans !== undefined &&
+    (!Array.isArray(hardBans) || hardBans.some((b) => typeof b !== "string"))
+  )
+    throw Error("Skontrolujte uložené obmedzenia plánovača.");
+  const meals = (entries.data ?? []).map((e) => ({
+    ...e,
+    components: (components.data ?? []).filter((c) => c.entry_id === e.id),
+  }));
   return (
     <Planner
+      hardBans={(hardBans ?? []) as string[]}
       start={start}
-      initial={entries.data ?? []}
+      initial={meals.filter((e) => e.meal_date >= start)}
+      previous={meals.filter((e) => e.meal_date < start)}
+      batches={batches.data ?? []}
       recipes={recipes}
       latest={latest}
       available={available}
       quality={quality}
       recent={recent}
-      ready={!ready.error}
-      settings={{
-        ...settings.data?.settings,
-        revision: settings.data?.revision,
-      }}
-      previous={previous.data ?? []}
+      ready={!components.error && !batches.error}
+      linked={(links.data ?? []).flatMap((l) =>
+        l.meal_entry_id ? [l.meal_entry_id] : [],
+      )}
     />
   );
 }

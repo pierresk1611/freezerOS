@@ -15,6 +15,7 @@ import {
   Save,
   Check,
 } from "lucide-react";
+import { mealRoles, defaultSlots, type MealRole } from "@/lib/meal-roles";
 import { recipeSchema } from "@/lib/domain";
 import { saveRecipe, type SaveResult } from "./actions";
 const editorSchema = recipeSchema.omit({ steps: true }).extend({
@@ -53,14 +54,20 @@ export function RecipeEditor({
   const [result, setResult] = useState<SaveResult>({});
   const {
     register,
+    setValue,
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<Fields, unknown, z.output<typeof editorSchema>>({
     resolver: zodResolver(editorSchema),
     defaultValues: initial
-      ? { ...initial, steps: initial.steps.map((text) => ({ text })) }
+      ? {
+          ...initial,
+          allowed_slots: initial.allowed_slots ?? [],
+          steps: initial.steps.map((text) => ({ text })),
+        }
       : {
+          allowed_slots: [],
           name: "",
           portions: 2,
           ingredients: [{ name: "", quantity: 100, unit: "g" }],
@@ -137,6 +144,60 @@ export function RecipeEditor({
     >
       <section className="card">
         <h2>Spôsob prípravy a časy</h2>
+        <label>
+          Rola v jedálničku
+          <select
+            aria-label="Rola v jedálničku"
+            {...register("meal_role", {
+              setValueAs: (v) => v || undefined,
+              onChange: (e) =>
+                setValue("allowed_slots", [
+                  ...defaultSlots(e.target.value as MealRole),
+                ]),
+            })}
+          >
+            <option value="">Nezatriedené</option>
+            {Object.entries(mealRoles)
+              .filter(([r]) => r !== "unknown")
+              .map(([r, l]) => (
+                <option value={r} key={r}>
+                  {l}
+                </option>
+              ))}
+          </select>
+        </label>
+        <fieldset>
+          <legend>Povolené jedlá dňa</legend>
+          {(
+            [
+              ["breakfast", "Raňajky"],
+              ["lunch", "Obed"],
+              ["dinner", "Večera"],
+              ["snack", "Snack"],
+            ] as const
+          ).map(([v, l]) => (
+            <label key={v}>
+              <input type="checkbox" value={v} {...register("allowed_slots")} />
+              {l}
+            </label>
+          ))}
+        </fieldset>
+        <label>
+          Samostatné prílohy
+          <select
+            {...register("side_policy", { setValueAs: (v) => v || undefined })}
+          >
+            <option value="">Neurčené</option>
+            <option value="none">Bez ďalšej prílohy / už je v recepte</option>
+            <option value="optional">Voliteľná príloha</option>
+            <option value="required">Vyžaduje prílohu</option>
+          </select>
+        </label>
+        <p>
+          Rola sa uloží ako nová verzia receptu. Nezatriedené recepty
+          automatický plán nepoužíva. Kompatibilné prílohy nastavíte v
+          zatriedení receptov jedálnička.
+        </p>
         <label>
           Kategória
           <select

@@ -53,6 +53,15 @@ export default async function Page({
     );
   for (const r of [choices, items, receipts, entries, aliases, allEntries])
     if (r.error) throw Error(r.error.message);
+  const [components, batches] = await Promise.all([
+    client.from("meal_plan_components").select("*").order("position"),
+    client.from("planned_cooking_batches").select("*"),
+  ]);
+  const withComponents = (rows: typeof entries.data) =>
+    (rows ?? []).map((e) => ({
+      ...e,
+      components: (components.data ?? []).filter((c) => c.entry_id === e.id),
+    }));
   return (
     <Shopping
       recipes={recipes}
@@ -83,8 +92,9 @@ export default async function Page({
         quantity: Number(i.quantity),
       }))}
       receipts={receipts.data ?? []}
-      weekEntries={entries.data ?? []}
-      mealEntries={allEntries.data ?? []}
+      weekEntries={withComponents(entries.data)}
+      batches={batches.data ?? []}
+      mealEntries={withComponents(allEntries.data)}
       aliases={Object.fromEntries(
         (aliases.data ?? []).map((a) => [a.alias, a.canonical]),
       )}

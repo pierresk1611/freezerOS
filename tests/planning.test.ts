@@ -17,6 +17,8 @@ const recipe: PlanningRecipe = {
   id: "a",
   recipe_id: "root",
   name: "Cibuľa",
+  meal_role: "main",
+  allowed_slots: ["lunch", "dinner"],
   portions: 2,
   ingredients: [{ name: "Cibuľa", quantity: 300, unit: "g" }],
 };
@@ -229,7 +231,7 @@ it("generator does not promise unknown ready portions", () => {
       available: { root: null },
       cookingDays: 0,
     }),
-  ).toThrow("preukázaných");
+  ).toThrow("hotových porcií");
 });
 it("ready days allocate known portions once and cooking days scale batches", () => {
   let n = 0;
@@ -245,9 +247,9 @@ it("ready days allocate known portions once and cooking days scale batches", () 
     () => String(n++),
     { available: { root: 4 }, cookingDays: 1, batchPortions: 6 },
   );
-  expect(rows.map((r) => r.ready_portions)).toEqual([0, 2, 2]);
-  expect(rows[0].batch_portions).toBe(6);
-  expect(() =>
+  expect(rows.map((r) => r.ready_portions)).toEqual([2, 2, 0]);
+  expect(rows[2].planned_batch_id).toBeTruthy();
+  expect(
     generateMeals(
       [recipe],
       "2026-10-12",
@@ -260,20 +262,28 @@ it("ready days allocate known portions once and cooking days scale batches", () 
       () => String(n++),
       { available: { root: 4 }, cookingDays: 1 },
     ),
-  ).toThrow("preukázaných");
+  ).toHaveLength(4);
 });
-it("known historical costs can reject over-budget proposals, unknown costs stay unknown", () => {
-  const priced = { ...recipe, estimated_cost_minor: 10000 };
-  expect(() =>
-    generateMeals([priced], "2026-10-12", 2, 2, 1, [], [], [], () => "id", {
-      budgetMinor: 100,
-    }),
-  ).toThrow("rozpočet");
+it("budget warnings keep unknown costs transparent", async () => {
+  const { generateSchedule } = await import("../src/lib/culinary-planning");
+  let n = 0;
+  const run = (r: PlanningRecipe) =>
+    generateSchedule(
+      [r],
+      "2026-10-12",
+      2,
+      2,
+      1,
+      [],
+      [],
+      [],
+      () => String(n++),
+      { budgetMinor: 100 },
+    );
   expect(
-    generateMeals([recipe], "2026-10-12", 2, 2, 1, [], [], [], () => "id", {
-      budgetMinor: 100,
-    }),
-  ).toHaveLength(2);
+    run({ ...recipe, estimated_cost_minor: 10000 }).warnings.join(),
+  ).toContain("rozpočet");
+  expect(run(recipe).warnings.join()).toContain("ceny chýbajú");
 });
 it("pack rounding handles minimum and zero demand", () => {
   expect(packagesNeeded(100, 500, 2)).toEqual({ count: 2, excess: 900 });

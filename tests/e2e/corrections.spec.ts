@@ -7,7 +7,7 @@ test("obsahová oprava vytvorí novú verziu, zachová várku a chráni použív
   page,
 }, info) => {
   test.setTimeout(60000);
-  const index = [360, 390, 768, 1280, 1440].indexOf(Number(info.project.name));
+  const index = [360, 390, 768, 1280, 1440, 1536].indexOf(Number(info.project.name));
   const item = plan.items[index],
     modified = plan.items[index + 5];
   const client = createClient(

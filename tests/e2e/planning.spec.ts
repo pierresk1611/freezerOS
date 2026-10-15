@@ -16,16 +16,22 @@ test("planner persists replacement, shopping recalculates and pantry is real", a
   ).toBeVisible();
   const isolatedWeek = weekMonday(
     2050 +
-      [360, 390, 768, 1280, 1440].indexOf(Number(info.project.name)) +
+      [360, 390, 768, 1280, 1440, 1536].indexOf(Number(info.project.name)) +
       "-01-04",
   );
   await page.goto("/meal-plan?week=" + isolatedWeek);
-  await page.getByRole("button", { name: "Pridať jedlo", exact: true }).click();
+  await page
+    .getByRole("button", { name: "+ Pridať", exact: true })
+    .first()
+    .click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByLabel("Recept", { exact: true })).toBeVisible();
+  await dialog.getByLabel("Manuálny výber", { exact: false }).check();
+  await expect(
+    dialog.getByLabel("Hlavné jedlo", { exact: true }),
+  ).toBeVisible();
   const options = await dialog
-    .getByLabel("Recept", { exact: true })
+    .getByLabel("Hlavné jedlo", { exact: true })
     .locator("option")
     .evaluateAll((es) =>
       es.map((e) => ({
@@ -35,11 +41,11 @@ test("planner persists replacement, shopping recalculates and pantry is real", a
     );
   expect(options.length).toBeGreaterThan(1);
   await dialog
-    .getByLabel("Recept", { exact: true })
+    .getByLabel("Hlavné jedlo", { exact: true })
     .selectOption(options[0].value);
-  await dialog.getByLabel("Plánované porcie").fill("3");
+  await dialog.getByLabel("Počet porcií").fill("3");
   await dialog
-    .getByRole("button", { name: "Potvrdiť jedlo", exact: true })
+    .getByRole("button", { name: "Potvrdiť výmenu a uložiť", exact: true })
     .click();
   await expect(dialog).toHaveCount(0);
   await page.reload();
@@ -47,17 +53,19 @@ test("planner persists replacement, shopping recalculates and pantry is real", a
     .locator(".planned-meal")
     .filter({ hasText: options[0].label! })
     .first();
-  await expect(card).toContainText("3 porcií");
-  await card
-    .getByRole("button", { name: "Vymeniť jedlo", exact: true })
-    .click();
+  await expect(card).toContainText("3 porcie");
+  await card.getByRole("button", { name: "Vymeniť", exact: true }).click();
   await page
     .getByRole("dialog")
-    .getByLabel("Recept", { exact: true })
+    .getByLabel("Manuálny výber", { exact: false })
+    .check();
+  await page
+    .getByRole("dialog")
+    .getByLabel("Hlavné jedlo", { exact: true })
     .selectOption(options[1].value);
   await page
     .getByRole("dialog")
-    .getByRole("button", { name: "Potvrdiť jedlo", exact: true })
+    .getByRole("button", { name: "Potvrdiť výmenu a uložiť", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.reload();
@@ -66,7 +74,7 @@ test("planner persists replacement, shopping recalculates and pantry is real", a
       .locator(".planned-meal")
       .filter({ hasText: options[1].label! })
       .first(),
-  ).toContainText("3 porcií");
+  ).toContainText("3 porcie");
   await page.goto("/shopping");
   await page
     .getByRole("button", { name: "Nový meal prep nákup", exact: true })
@@ -175,27 +183,68 @@ test("planning API denies anonymous and cross-origin writes", async ({
   expect(foreign.status()).toBe(403);
 });
 
-test("generated week → shopping replacement → explicit atomic calendar sync", async ({
+test("culinary planner groups sides, reuses batches and repeat generation is safe", async ({
   page,
 }, info) => {
   test.setTimeout(120000);
   const { createClient } = await import("@supabase/supabase-js");
-  const client = createClient(
+  const c = createClient(
     process.env.FREEZER_TEST_API_URL!,
     process.env.FREEZER_TEST_ANON_KEY!,
     { auth: { persistSession: false } },
   );
-  await client.auth.signInWithPassword({
+  await c.auth.signInWithPassword({
     email: process.env.FREEZER_TEST_EMAIL!,
     password: process.env.FREEZER_TEST_PASSWORD!,
   });
-  const before = (
-    await client.from("inventory_packages").select("id,remaining_g").order("id")
-  ).data;
-  const year =
-    2030 + [360, 390, 768, 1280, 1440].indexOf(Number(info.project.name));
-  const { monday } = await import("../../src/lib/planning");
-  const week = monday(year + "-01-07");
+  const tag = info.project.name + " " + randomUUID().slice(0, 6);
+  const riceId = randomUUID(),
+    mainId = randomUUID();
+  const base = {
+    portions: 2,
+    ingredients: [{ name: "Cibuľa", quantity: 100, unit: "g" }],
+    steps: ["Uvariť a bezpečne schladiť."],
+    storage: "Rýchlo schladiť.",
+    reheating: "Dôkladne prehriať.",
+    freezing: true,
+    meat: "pork",
+  };
+  expect(
+    (
+      await c.rpc("create_recipe_with_id", {
+        p_id: riceId,
+        p_recipe: {
+          ...base,
+          name: "Jazmínová ryža — príloha " + tag,
+          meal_role: "side",
+          allowed_slots: ["lunch", "dinner"],
+          side_policy: "none",
+        },
+      })
+    ).error,
+  ).toBeNull();
+  expect(
+    (
+      await c.rpc("create_recipe_with_id", {
+        p_id: mainId,
+        p_recipe: {
+          ...base,
+          name:
+            "Sticky Ginger Pulled Pork — pomaly pečené šťavnaté bravčové " +
+            tag,
+          meal_role: "main",
+          allowed_slots: ["lunch", "dinner"],
+          side_policy: "required",
+          compatible_side_ids: [riceId],
+        },
+      })
+    ).error,
+  ).toBeNull();
+  const week = weekMonday(
+    2030 +
+      [360, 390, 768, 1280, 1440, 1536].indexOf(Number(info.project.name)) +
+      "-01-07",
+  );
   await page.goto("/login");
   await page.getByLabel("E-mail").fill(process.env.FREEZER_TEST_EMAIL!);
   await page
@@ -209,107 +258,98 @@ test("generated week → shopping replacement → explicit atomic calendar sync"
   await page
     .getByRole("button", { name: "Navrhnúť týždeň", exact: true })
     .click();
-  await page.getByLabel("Počet osôb", { exact: true }).fill("2");
-  await page.getByLabel("Jedál denne", { exact: true }).selectOption("1");
-  await page.getByLabel("Počet dní", { exact: true }).fill("3");
-  await page.getByLabel("Dní varenia", { exact: true }).fill("3");
-  await page.getByLabel("Preferované porcie jednej várky").fill("6");
+  const ownVersion = (
+    await c
+      .from("recipe_versions")
+      .select("id")
+      .eq("recipe_id", mainId)
+      .single()
+  ).data!.id;
   await page
-    .getByRole("button", { name: "Zobraziť návrh", exact: true })
-    .click();
-  await expect(
-    page.getByRole("heading", { name: "Náhľad 3 jedál", exact: true }),
-  ).toBeVisible();
+    .getByLabel("Recepty do návrhu", { exact: true })
+    .selectOption([ownVersion]);
   await page
-    .getByRole("button", { name: "Potvrdiť plán", exact: true })
+    .getByRole("button", { name: "Zobraziť návrh a rozdiely", exact: true })
     .click();
-  await expect(
-    page.getByRole("heading", { name: "Náhľad 3 jedál", exact: true }),
-  ).toHaveCount(0);
+  const preview = page.getByRole("dialog");
+  await expect(preview).toContainText("Skontrolujte zmeny");
+  await preview
+    .getByLabel("Potvrdzujem uvedené zmeny", { exact: false })
+    .check();
+  await preview
+    .getByRole("button", { name: "Potvrdiť zmeny", exact: true })
+    .click();
+  await expect(preview).toHaveCount(0);
   await page.reload();
-  await expect(page.locator(".planned-meal")).toHaveCount(3);
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBe(true);
-  await page.screenshot({
-    path: `test-results/planner-009-${info.project.name}.png`,
-    fullPage: true,
-  });
+  await expect(page.locator(".planned-meal")).toHaveCount(14);
   const entries = (
-    await client
+    await c
       .from("meal_plan_entries")
       .select("*")
       .gte("meal_date", week)
       .lte("meal_date", week.slice(0, 8) + "31")
   ).data!;
-  expect(entries.length).toBe(3);
-  expect(entries.every((e) => Number(e.batch_portions) === 6)).toBe(true);
-  await page.getByRole("link", { name: "Vytvoriť nákup", exact: true }).click();
-  await page
-    .getByRole("button", { name: "Nákup z týždňa (3 jedál)", exact: true })
-    .click();
-  const title = "Sync " + info.project.name + " " + randomUUID().slice(0, 8);
-  await page.getByLabel("Názov plánu").fill(title);
-  await page
-    .getByRole("button", { name: "Vymeniť recept", exact: true })
-    .first()
-    .click();
-  const select = page
-    .getByRole("dialog")
-    .getByLabel("Nový recept", { exact: true });
-  const previous = await select.inputValue();
-  const options = await select
-    .locator("option")
-    .evaluateAll((es) => es.map((e) => (e as HTMLOptionElement).value));
-  const replacement = options.find((v) => v !== previous)!;
-  await select.selectOption(replacement);
-  await page
-    .getByRole("button", { name: "Porovnať zmeny", exact: true })
-    .click();
-  await page
-    .getByRole("dialog")
-    .getByLabel(
-      "Pri prepojených receptoch synchronizovať výmenu aj do kalendára pri uložení",
-      { exact: true },
-    )
-    .check();
-  await page
-    .getByRole("button", { name: "Prijať prepočet", exact: true })
-    .click();
-  await page
-    .getByRole("button", { name: "Uložiť nákupný plán", exact: true })
-    .click();
-  await expect(page.getByRole("status")).toHaveText("Uložené.");
-  await expect(page.locator(".planning-dirty")).toHaveCount(0);
-  const afterEntries = (
-    await client
-      .from("meal_plan_entries")
-      .select("*")
-      .in(
-        "id",
-        entries.map((e) => e.id),
-      )
+  expect(entries).toHaveLength(14);
+  expect(entries.every((e) => e.planned_batch_id)).toBe(true);
+  const ids = entries.map((e) => e.id).sort();
+  const components = (
+    await c.from("meal_plan_components").select("*").in("entry_id", ids)
   ).data!;
-  expect(afterEntries.filter((e) => e.revision === 1)).toHaveLength(1);
+  expect(components).toHaveLength(14);
+  const batches = (
+    await c
+      .from("planned_cooking_batches")
+      .select("*")
+      .in("id", [...new Set(entries.map((e) => e.planned_batch_id))])
+  ).data!;
+  expect(batches.length).toBeLessThan(14);
+  expect(batches.every((b) => Number(b.portions) === 6)).toBe(true);
   expect(
-    afterEntries.some(
-      (e) => e.recipe_version_id === replacement && e.revision === 1,
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  expect(
-    (
-      await client
-        .from("inventory_packages")
-        .select("id,remaining_g")
-        .order("id")
-    ).data,
-  ).toEqual(before);
+  const widths = await page
+    .locator(".planner-day")
+    .evaluateAll((nodes) => nodes.map((n) => n.getBoundingClientRect().width));
+  expect(Math.min(...widths)).toBeGreaterThan(
+    Number(info.project.name) >= 768 ? 500 : 250,
+  );
   await page.screenshot({
-    path: `test-results/shopping-009-${info.project.name}.png`,
+    path: "test-results/culinary-010-" + info.project.name + ".png",
     fullPage: true,
   });
+  await page
+    .getByRole("button", { name: "Navrhnúť týždeň", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Zobraziť návrh a rozdiely", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toContainText("Nie sú žiadne zmeny");
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Zrušiť", exact: true })
+    .click();
+  expect(
+    (await c.from("meal_plan_entries").select("id").in("id", ids))
+      .data!.map((e) => e.id)
+      .sort(),
+  ).toEqual(ids);
+  await page.getByRole("link", { name: "Vytvoriť nákup", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Nákup z týždňa (14 jedál)", exact: true })
+    .click();
+  await expect(page.getByLabel("Názov plánu")).toHaveValue(
+    "Nákup z jedálnička",
+  );
+  expect(
+    (
+      await c
+        .from("cooking_batches")
+        .select("id")
+        .eq("recipe_version_id", ownVersion)
+    ).data,
+  ).toEqual([]);
 });
 
 test("food cost excludes alcohol/drugstore and physical pantry receipt cannot duplicate", async ({
@@ -523,6 +563,101 @@ test("planned recipe snapshot remains readable after revision and archive", asyn
   await expect(
     page.getByText("Recept je archivovaný.", { exact: false }),
   ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});
+
+test("role confirmation creates a new version and preserves original content", async ({
+  page,
+}, info) => {
+  const { createClient } = await import("@supabase/supabase-js");
+  const c = createClient(
+    process.env.FREEZER_TEST_API_URL!,
+    process.env.FREEZER_TEST_ANON_KEY!,
+    { auth: { persistSession: false } },
+  );
+  await c.auth.signInWithPassword({
+    email: process.env.FREEZER_TEST_EMAIL!,
+    password: process.env.FREEZER_TEST_PASSWORD!,
+  });
+  const id = randomUUID(),
+    name =
+      "Zeleninová príloha na potvrdenie " +
+      info.project.name +
+      " " +
+      randomUUID().slice(0, 6);
+  const original = {
+    name,
+    portions: 2,
+    ingredients: [{ name: "Cvikla", quantity: 300, unit: "g" }],
+    steps: ["Upiecť."],
+    meat: "none",
+    storage: "Schladiť.",
+    reheating: "Prehriať.",
+    freezing: true,
+  };
+  expect(
+    (await c.rpc("create_recipe_with_id", { p_id: id, p_recipe: original }))
+      .error,
+  ).toBeNull();
+  const before = (
+    await c.from("recipe_versions").select("*").eq("recipe_id", id)
+  ).data!;
+  await page.goto("/login");
+  await page.getByLabel("E-mail").fill(process.env.FREEZER_TEST_EMAIL!);
+  await page
+    .getByLabel("Heslo", { exact: true })
+    .fill(process.env.FREEZER_TEST_PASSWORD!);
+  await page.getByRole("button", { name: "Prihlásiť sa", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Dobrý deň, čo si dáme?" }),
+  ).toBeVisible();
+  await page.goto("/meal-plan/roles");
+  const card = page
+    .locator("article")
+    .filter({ has: page.locator("strong").filter({ hasText: name }) });
+  await card.getByRole("combobox").first().selectOption("vegetable_side");
+  await card.getByRole("checkbox").first().check();
+  const responsePromise = page.waitForResponse(
+    (r) => r.url().includes("/api/planning") && r.request().method() === "POST",
+  );
+  await page
+    .getByRole("button", {
+      name: "Potvrdiť vybrané roly — uložiť nové verzie",
+      exact: true,
+    })
+    .click();
+  const response = await responsePromise;
+  expect(response.request().postDataJSON().data[0].version_id).toBe(
+    before[0].id,
+  );
+  const saved = await response.json();
+  expect(saved.error).toBeUndefined();
+  expect(
+    saved.roleVersions.find((v: { recipe_id: string }) => v.recipe_id === id)
+      ?.id,
+  ).not.toBe(before[0].id);
+
+  await expect
+    .poll(
+      async () =>
+        (await c.from("recipe_versions").select("id").eq("recipe_id", id)).data
+          ?.length,
+    )
+    .toBe(2);
+  const after = (
+    await c
+      .from("recipe_versions")
+      .select("*")
+      .eq("recipe_id", id)
+      .order("version")
+  ).data!;
+  expect(after[0]).toEqual(before[0]);
+  expect(after[1].metadata.meal_role).toBe("vegetable_side");
+  expect(after[1].steps).toEqual(before[0].steps);
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,

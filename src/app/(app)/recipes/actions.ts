@@ -32,6 +32,16 @@ export async function saveRecipe(form: FormData): Promise<SaveResult> {
     parsed.data.cooking_minutes_min > parsed.data.cooking_minutes_max
   )
     return { message: "Začiatočný čas pečenia nemôže byť väčší než konečný." };
+  if (parsed.data.meal_role && parsed.data.meal_role !== "unknown") {
+    if (!parsed.data.allowed_slots?.length)
+      return { message: "Vyberte povolené jedlá dňa." };
+    const ready = await client
+      .from("meal_plan_components")
+      .select("id")
+      .limit(0);
+    if (ready.error)
+      return { message: "Pre uloženie roly najprv aktivujte migráciu 010." };
+  }
   const request = z.string().uuid().safeParse(form.get("request_id"));
   if (!request.success)
     return { message: "Platnosť formulára vypršala. Obnovte stránku." };

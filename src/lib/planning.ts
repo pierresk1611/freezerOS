@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { generateSchedule } from "./culinary-planning";
+import type { MealRole } from "./meal-roles";
 import { normalizeName } from "./food-cost";
 export const slots = {
   breakfast: "Raňajky",
@@ -26,7 +28,24 @@ export function monday(day: string) {
   const d = new Date(day + "T12:00:00Z").getUTCDay();
   return addDays(day, -((d + 6) % 7));
 }
+export const mealComponentSchema = z.object({
+  recipe_version_id: z.string().uuid(),
+  portions: z.number().positive().max(100),
+  ready_portions: z.number().nonnegative().max(100).optional(),
+  planned_batch_id: z.string().uuid().nullable().optional(),
+});
+export type MealComponent = z.infer<typeof mealComponentSchema>;
+export type PlannedBatch = {
+  id: string;
+  revision?: number;
+  recipe_version_id: string;
+  cooking_date: string;
+  portions: number;
+};
 export const mealSchema = z.object({
+  components: z.array(mealComponentSchema).max(8).optional(),
+  planned_batch_id: z.string().uuid().nullable().optional(),
+  origin: z.enum(["manual", "generated"]).optional(),
   id: z.string().uuid(),
   revision: z.number().int().nonnegative().optional(),
   recipe_version_id: z.string().uuid(),
@@ -38,6 +57,10 @@ export const mealSchema = z.object({
 });
 export type Meal = z.infer<typeof mealSchema>;
 export type PlanningRecipe = {
+  meal_role?: MealRole;
+  allowed_slots?: string[];
+  side_policy?: "none" | "optional" | "required";
+  compatible_side_ids?: string[];
   id: string;
   recipe_id: string;
   name: string;
@@ -81,6 +104,7 @@ export type ShoppingItem = {
   selection: Record<string, unknown> | null;
 };
 export type ShoppingPlan = {
+  planner_review_required?: boolean;
   calendar_changes?: Meal[];
   id: string;
   revision?: number;
@@ -226,132 +250,20 @@ export function generateMeals(
     quality?: Record<string, string>;
   },
 ) {
-  const allowed = recipes.filter(
-    (r) =>
-      !banned.some((b) =>
-        normalizeName(
-          r.name +
-            " " +
-            ({
-              fish: "ryba ryby",
-              beef: "hovädzie",
-              pork: "bravčové",
-              chicken: "kuracie",
-            }[r.meat ?? ""] ?? "") +
-            " " +
-            r.ingredients.map((i) => i.name).join(" "),
-        ).includes(normalizeName(b)),
-      ),
-  );
-  if (!allowed.length) throw Error("Žiadny recept nespĺňa tvrdé obmedzenia.");
-  const result: Meal[] = [];
-  const counts = new Map<string, number>();
-  existing.forEach((e) =>
-    counts.set(e.recipe_version_id, (counts.get(e.recipe_version_id) ?? 0) + 1),
-  );
-  const remaining = { ...options?.available };
-  for (const entry of existing) {
-    const root = recipes.find(
-      (r) => r.id === entry.recipe_version_id,
-    )?.recipe_id;
-    if (root && remaining[root] !== null && remaining[root] !== undefined)
-      remaining[root] = Math.max(
-        0,
-        Number(remaining[root]) - Number(entry.ready_portions ?? 0),
-      );
-  }
-  for (let d = 0; d < days; d++)
-    for (let s = 0; s < perDay; s++) {
-      const last = result
-        .slice(-3)
-        .map((e) => allowed.find((r) => r.id === e.recipe_version_id)?.meat);
-      const readyDay =
-        options?.cookingDays !== undefined && d >= options.cookingDays;
-      const candidates = readyDay
-        ? allowed.filter((r) => (remaining[r.recipe_id] ?? 0) >= persons)
-        : allowed;
-      if (!candidates.length)
-        throw Error(
-          "Na dni s hotovým jedlom nie je dosť preukázaných porcií. Znížte ich počet alebo zvýšte počet dní varenia.",
-        );
-      const sorted = [...candidates].sort((a, b) => score(b) - score(a));
-      function score(r: PlanningRecipe) {
-        return (
-          (r.preference ?? 0) +
-          (options?.economic && r.estimated_cost_minor !== undefined
-            ? 3 / (1 + r.estimated_cost_minor / r.portions / 100)
-            : 0) +
-          (options?.quality?.[r.recipe_id]
-            ? Math.max(
-                0,
-                2 -
-                  (Date.parse(options.quality[r.recipe_id]) -
-                    Date.parse(start)) /
-                    86400000 /
-                    30,
-              )
-            : 0) -
-          (counts.get(r.id) ?? 0) * 3 -
-          recent.filter((n) => n === r.name).length -
-          (last.length === 3 && last.every((m) => m === r.meat) ? 4 : 0)
-        );
-      }
-      const r = sorted[0];
-      counts.set(r.id, (counts.get(r.id) ?? 0) + 1);
-      result.push({
-        id: uuid(),
-        recipe_version_id: r.id,
-        meal_date: addDays(start, d),
-        slot: (["lunch", "dinner", "breakfast", "snack"] as const)[s],
-        portions: persons,
-        ready_portions: readyDay ? persons : 0,
-        batch_portions: readyDay
-          ? 0
-          : Math.max(persons, options?.batchPortions ?? persons),
-      });
-      if (readyDay)
-        remaining[r.recipe_id] = Number(remaining[r.recipe_id]) - persons;
-      if (options?.sideVersion) {
-        const side = allowed.find((x) => x.id === options.sideVersion);
-        if (!side) throw Error("Príloha nespĺňa tvrdé obmedzenia.");
-        if (side.id !== r.id) {
-          if (readyDay && Number(remaining[side.recipe_id] ?? 0) < persons)
-            throw Error("Na hotový deň chýbajú preukázané porcie prílohy.");
-          result.push({
-            id: uuid(),
-            recipe_version_id: side.id,
-            meal_date: addDays(start, d),
-            slot: (["lunch", "dinner", "breakfast", "snack"] as const)[s],
-            portions: persons,
-            ready_portions: readyDay ? persons : 0,
-          });
-          if (readyDay)
-            remaining[side.recipe_id] =
-              Number(remaining[side.recipe_id]) - persons;
-        }
-      }
-    }
-  if (options?.budgetMinor !== undefined) {
-    const estimates = result.map((e) => {
-      const r = allowed.find((r) => r.id === e.recipe_version_id)!;
-      return r.estimated_cost_minor === undefined
-        ? null
-        : Math.round(
-            (r.estimated_cost_minor *
-              (e.ready_portions ? 0 : e.batch_portions || e.portions)) /
-              r.portions,
-          );
-    });
-    if (
-      estimates.every((n) => n !== null) &&
-      estimates.reduce((s, n) => s + Number(n), 0) > options.budgetMinor
-    )
-      throw Error(
-        "Návrh prekračuje zadaný orientačný rozpočet. Zmeňte recepty, počet porcií alebo rozpočet.",
-      );
-  }
-  return result;
+  return generateSchedule(
+    recipes,
+    start,
+    days,
+    persons,
+    perDay,
+    existing,
+    recent,
+    banned,
+    uuid,
+    options,
+  ).entries;
 }
+
 export function shoppingText(p: ShoppingPlan) {
   return (
     `${p.name}\n` +

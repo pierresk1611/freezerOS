@@ -19,19 +19,30 @@ export async function loadRecipePhotos(
     needsMigration: false,
   });
   if (!ids.length) return result;
-  const { data, error } = await client
-    .from("recipe_photos")
-    .select("*")
-    .in("recipe_id", ids)
-    .order("is_primary", { ascending: false })
-    .order("position");
-  if (error) {
-    if (["PGRST205", "42P01"].includes(error.code)) {
-      result.needsMigration = true;
-      return result;
+  // Bound query strings even when batch import grows the library beyond hundreds of recipes.
+  const unique = [...new Set(ids)];
+  const queries = [];
+  for (let offset = 0; offset < unique.length; offset += 100)
+    queries.push(
+      client
+        .from("recipe_photos")
+        .select("*")
+        .in("recipe_id", unique.slice(offset, offset + 100))
+        .order("is_primary", { ascending: false })
+        .order("position"),
+    );
+  const responses = await Promise.all(queries);
+  const data = responses.flatMap((response) => {
+    if (response.error) {
+      if (["PGRST205", "42P01"].includes(response.error.code)) {
+        result.needsMigration = true;
+        return [];
+      }
+      throw response.error;
     }
-    throw error;
-  }
+    return response.data ?? [];
+  });
+  if (result.needsMigration) return result;
   const paths = (data ?? []).flatMap((p) => [p.storage_path, p.thumbnail_path]);
   if (!paths.length) return result;
   const signed = await client.storage

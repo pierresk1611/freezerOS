@@ -43,6 +43,10 @@ export async function planningData() {
       portions: r.portions,
       ingredients: r.ingredients,
       meat: r.meat,
+      meal_role: r.meal_role ?? "unknown",
+      allowed_slots: r.allowed_slots ?? [],
+      side_policy: r.side_policy ?? "none",
+      compatible_side_ids: r.compatible_side_ids ?? [],
       prep_minutes: r.prep_minutes,
       estimated_cost_minor: (() => {
         const estimate = estimateRecipeCost(

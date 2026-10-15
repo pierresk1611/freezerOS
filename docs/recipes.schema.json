@@ -180,6 +180,50 @@
             "type": "integer",
             "minimum": 50,
             "maximum": 300
+          },
+          "meal_role": {
+            "type": "string",
+            "enum": [
+              "unknown",
+              "main",
+              "complete",
+              "side",
+              "vegetable_side",
+              "component",
+              "breakfast",
+              "snack"
+            ]
+          },
+          "allowed_slots": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "breakfast",
+                "lunch",
+                "dinner",
+                "snack"
+              ]
+            },
+            "maxItems": 4,
+            "uniqueItems": true
+          },
+          "side_policy": {
+            "type": "string",
+            "enum": [
+              "none",
+              "optional",
+              "required"
+            ]
+          },
+          "compatible_side_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 30,
+            "uniqueItems": true
           }
         },
         "required": [
