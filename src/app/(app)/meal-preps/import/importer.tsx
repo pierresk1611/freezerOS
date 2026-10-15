@@ -1,4 +1,5 @@
 "use client";
+import { RecipeSections } from "@/components/recipe-sections";
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -127,6 +128,7 @@ export default function Importer({
   }
   return (
     <section className="recipe-page prep-page">
+      <RecipeSections active="projects" />
       <Link href="/meal-preps">← Meal prepy</Link>
       <h1>Import meal-prepu od AI</h1>
       <p>

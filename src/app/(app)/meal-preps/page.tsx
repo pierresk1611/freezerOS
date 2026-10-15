@@ -1,3 +1,4 @@
+import { RecipeSections } from "@/components/recipe-sections";
 import Link from "next/link";
 import { userDb } from "@/lib/supabase";
 import { prepStatuses } from "@/lib/meal-prep";
@@ -9,8 +10,9 @@ export default async function Page() {
     .order("created_at", { ascending: false });
   return (
     <section className="recipe-page">
+      <RecipeSections active="projects" />
       <p className="eyebrow">VARTE RAZ, JEDZTE S POKOJOM</p>
-      <h1>Meal prepy</h1>
+      <h1>Meal prep projekty</h1>
       <p>Recepty, spoločný nákup a organizácia varenia na jednom mieste.</p>
       <Link className="button" href="/meal-preps/import">
         Importovať od AI

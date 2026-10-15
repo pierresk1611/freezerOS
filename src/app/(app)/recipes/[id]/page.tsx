@@ -1,3 +1,4 @@
+import { RecipeSections } from "@/components/recipe-sections";
 import { userDb } from "@/lib/supabase";
 import { money } from "@/lib/domain";
 import Link from "next/link";
@@ -39,8 +40,23 @@ export default async function RecipeDetail({
     .eq("status", "pending");
   if (referenceError && !["PGRST205", "42P01"].includes(referenceError.code))
     throw referenceError;
+  const { data: usages, error: usagesError } = await client
+    .from("meal_prep_project_recipes")
+    .select("project_id, recipe_versions!inner(recipe_id)")
+    .eq("recipe_versions.recipe_id", r.recipe_id);
+  const projectIds = [
+    ...new Set((usages ?? []).map((item) => item.project_id)),
+  ];
+  const linked = projectIds.length
+    ? await client
+        .from("meal_prep_projects")
+        .select("id,name")
+        .in("id", projectIds)
+        .order("created_at", { ascending: false })
+    : { data: [], error: null };
   return (
     <div className="recipe-page recipe-detail">
+      <RecipeSections active="library" />
       <Link href="/recipes" className="back-link">
         <ArrowLeft size={18} />
         Späť do kuchárky
@@ -203,6 +219,31 @@ export default async function RecipeDetail({
           </p>
         </section>
       )}
+      <section className="card recipe-linked-projects">
+        <h2>Prepojené meal prep projekty</h2>
+        {usagesError || linked.error ? (
+          <p role="status">
+            Prepojené projekty sa nepodarilo načítať. Skúste stránku obnoviť.
+          </p>
+        ) : linked.data?.length ? (
+          <ul>
+            {linked.data.map((project) => (
+              <li key={project.id}>
+                <Link className="text-link" href={"/meal-preps/" + project.id}>
+                  {project.name} →
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="muted">
+            Tento recept zatiaľ nie je súčasťou meal prep projektu.
+          </p>
+        )}
+        <Link className="text-link" href="/meal-preps">
+          Všetky meal prep projekty →
+        </Link>
+      </section>
       <section className="recipe-data-note">
         <h2>Výživa a Food Cost</h2>
         <p className="muted">

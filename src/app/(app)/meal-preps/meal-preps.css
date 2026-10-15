@@ -26,7 +26,7 @@
 }
 .prep-preview-recipe {
   padding: 1rem 0;
-  border-bottom: 1px solid #dde5db;
+  border-bottom: 1px solid var(--border);
 }
 .prep-page label {
   display: block;
@@ -59,8 +59,8 @@
 .prep-summary {
   padding: 1.2rem;
   border-radius: 18px;
-  background: var(--card, #fff);
-  border: 1px solid #dde5db;
+  background: var(--surface);
+  border: 1px solid var(--border);
 }
 .prep-page button {
   min-height: 44px;
@@ -71,7 +71,7 @@
   gap: 0.5rem;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #e2e7df;
+  border-bottom: 1px solid var(--border);
   padding: 0.6rem 0;
 }
 .prep-check label {
@@ -101,12 +101,164 @@
 
 @media (max-width: 1023px) {
   .prep-grid > aside {
-    grid-row: 1;
+    grid-row: 2;
   }
   .prep-grid > div {
-    grid-row: 2;
+    grid-row: 1;
   }
 }
 .prep-page [id^="prep-"] {
   scroll-margin-top: 24px;
+}
+
+/* All project surfaces share the app theme, including native dark mode. */
+.prep-project {
+  max-width: 1480px;
+  margin-inline: auto;
+}
+.prep-project > h1 {
+  max-width: 24ch;
+  line-height: 1.12;
+}
+.prep-project > p {
+  max-width: 78ch;
+}
+.prep-project > label {
+  max-width: 320px;
+}
+.prep-project .prep-summary {
+  color: var(--ink);
+  background: var(--surface);
+}
+.prep-project .prep-summary > p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.prep-project .prep-summary h2 {
+  margin-bottom: 8px;
+}
+.prep-project .prep-check label {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  column-gap: 10px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+.prep-project .prep-check input {
+  grid-row: span 3;
+  margin: 0;
+  accent-color: var(--accent);
+}
+.prep-project .prep-check strong {
+  font-weight: 600;
+}
+.prep-project .prep-check:has(input:checked) {
+  color: var(--muted);
+}
+.prep-project .prep-check:has(input:checked) label {
+  text-decoration: line-through;
+}
+.prep-project .prep-meal h3 {
+  font-size: 1.2rem;
+  line-height: 1.4;
+  margin: 0 0 8px;
+}
+.prep-project .prep-recipe-head a {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.prep-project details {
+  border-top: 1px solid var(--border);
+  padding-block: 14px;
+  margin-top: 12px;
+}
+.prep-project summary {
+  min-height: 44px;
+  display: list-item;
+  align-content: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+.prep-project details[open] > summary {
+  margin-bottom: 12px;
+}
+.prep-project .prep-danger {
+  background: transparent;
+  color: #ad3030;
+  border: 1px solid var(--border);
+}
+.prep-project .prep-actions a:not(.button) {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.prep-project .prep-summary .prep-actions button {
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+.prep-project .prep-instructions ol {
+  padding-left: 24px;
+}
+.prep-project .prep-instructions li {
+  margin-block: 16px;
+}
+@media (min-width: 1200px) {
+  .prep-project .prep-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+    gap: 28px;
+  }
+}
+@media (max-width: 767px) {
+  .prep-project .prep-meal {
+    padding: 18px;
+  }
+  .prep-project .prep-actions {
+    gap: 10px;
+  }
+  .prep-project .prep-recipe-head {
+    grid-template-columns: minmax(0, 1fr) 90px;
+  }
+  .prep-project .prep-cook-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .prep-project .prep-danger {
+    color: #ffb5ac;
+  }
+}
+.prep-project > nav.prep-actions {
+  padding: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 16px;
+  gap: 4px;
+}
+.prep-project > nav.prep-actions a {
+  padding: 10px 14px;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 10px;
+}
+.prep-project > nav.prep-actions a:hover {
+  background: var(--bg);
+}
+.prep-project > .prep-actions > button:not(:first-child) {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+.prep-project .prep-check > button {
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.85rem;
+  padding-inline: 10px;
+}
+.prep-project :is(button, a, summary, input, select):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
 }

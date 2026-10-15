@@ -1,3 +1,4 @@
+import { RecipeSections } from "@/components/recipe-sections";
 import Link from "next/link";
 import {
   Search,
@@ -77,6 +78,7 @@ export default async function Recipes({
   );
   return (
     <div className="recipe-page">
+      <RecipeSections active="library" />
       <header className="recipe-heading">
         <div>
           <div className="eyebrow">VAŠA OSOBNÁ KUCHÁRKA</div>

@@ -105,6 +105,7 @@ test("AI meal prep imports ten recipes, persists shared shopping, manual items a
   ).data!;
   expect(counts).toHaveLength(10);
   await page.getByLabel("Porcie meal_0", { exact: true }).fill("8");
+  await page.getByText("+ Pridať vlastnú položku", { exact: true }).click();
   await page.getByLabel("Názov položky", { exact: true }).fill("Vrecká " + tag);
   await page
     .getByRole("button", { name: "Pridať manuálnu položku", exact: true })
@@ -142,10 +143,75 @@ test("AI meal prep imports ten recipes, persists shared shopping, manual items a
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  await page.screenshot({
-    path: `test-results/meal-prep-${info.project.name}.png`,
-    fullPage: false,
-  });
+  for (const colorScheme of ["light", "dark"] as const) {
+    await page.emulateMedia({ colorScheme });
+    const contrast = await page.locator(".prep-summary").evaluate((el) => {
+      const style = getComputedStyle(el);
+      const luminance = (color: string) => {
+        const rgb = color
+          .match(/\d+/g)!
+          .slice(0, 3)
+          .map(Number)
+          .map((v) => {
+            const n = v / 255;
+            return n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
+          });
+        return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
+      };
+      const a = luminance(style.color),
+        b = luminance(style.backgroundColor);
+      return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+    });
+    expect(contrast).toBeGreaterThanOrEqual(4.5);
+    await expect(
+      page.locator(".prep-instructions").first(),
+    ).not.toHaveAttribute("open", "");
+    await page.locator(".prep-summary").scrollIntoViewIfNeeded();
+    await page.screenshot({
+      path: `test-results/meal-prep-${info.project.name}-${colorScheme}.png`,
+      fullPage: false,
+    });
+  }
+  await expect(
+    page
+      .locator(".sidebar")
+      .getByRole("link", { name: "Meal prepy", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page
+      .getByRole("navigation", { name: "Sekcie receptov" })
+      .getByRole("link", { name: "Meal prep projekty", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
+  const version = (
+    await c
+      .from("recipe_versions")
+      .select("recipe_id")
+      .eq("id", rows[0].recipe_version_id)
+      .single()
+  ).data!;
+  await page.goto("/recipes/" + version.recipe_id);
+  await expect(
+    page
+      .locator(".recipe-linked-projects")
+      .getByRole("link", { name: tag + " →", exact: true }),
+  ).toBeVisible();
+  await page
+    .locator(".recipe-linked-projects")
+    .getByRole("link", { name: tag + " →", exact: true })
+    .click();
+  await expect(page).toHaveURL(new RegExp("/meal-preps/" + project.id + "$"));
+  await page
+    .getByRole("navigation", { name: "Sekcie receptov" })
+    .getByRole("link", { name: "Knižnica receptov", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/recipes$/);
+  await page
+    .getByRole("navigation", { name: "Sekcie receptov" })
+    .getByRole("link", { name: "Meal prep projekty", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Meal prep projekty", exact: true }),
+  ).toBeVisible();
   await page.goto("/meal-preps/import");
   await page.getByLabel("Vybrať JSON súbory").setInputFiles({
     name: "replay.json",
@@ -198,7 +264,9 @@ test("AI import validates fields, supports multiple files and selection", async 
   await page
     .getByRole("button", { name: "Načítať náhľad", exact: true })
     .click();
-  await expect(page.getByRole("main").getByRole("alert")).toContainText("format");
+  await expect(page.getByRole("main").getByRole("alert")).toContainText(
+    "format",
+  );
   const docs = [
     makeDocument(
       "Multi A " + info.project.name + " " + randomUUID().slice(0, 6),
@@ -387,6 +455,10 @@ test("AI project explicitly links combined calendar and a real batch without dup
   ).data!;
   expect(packages).toHaveLength(3);
   await page.reload();
+  for (const summary of await page
+    .getByText("Suroviny, postup a mrazenie", { exact: true })
+    .all())
+    await summary.click();
   for (const summary of await page
     .getByText("Prepojiť skutočne uvarenú várku", { exact: true })
     .all())

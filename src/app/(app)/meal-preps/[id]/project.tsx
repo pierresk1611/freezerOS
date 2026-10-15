@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
+import { RecipeSections } from "@/components/recipe-sections";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -270,8 +271,9 @@ export default function Project({
   ).length;
   const locked = state.project.status !== "planned";
   return (
-    <section className="recipe-page prep-page">
-      <Link href="/meal-preps">← Meal prepy</Link>
+    <section className="recipe-page prep-page prep-project">
+      <RecipeSections active="projects" />
+      <Link href="/meal-preps">← Všetky meal prep projekty</Link>
       <p className="eyebrow">SPOLOČNÝ PLÁN, JEDNA KUCHYŇA</p>
       <h1>{state.project.name}</h1>
       <p>{state.project.description}</p>
@@ -354,7 +356,7 @@ export default function Project({
           {rows.map((row, index) => {
             const recipe = r(row.recipe_version_id);
             return (
-              <article className="card" key={row.id}>
+              <article className="card prep-meal" key={row.id}>
                 <div className="prep-recipe-head">
                   <div>
                     {recipe.photo && (
@@ -393,233 +395,247 @@ export default function Project({
                     />
                   </label>
                 </div>
-                <label>
-                  Vymeniť recept
-                  <select
-                    aria-label={"Vymeniť recept " + row.local_key}
-                    disabled={locked}
-                    value={row.recipe_version_id}
-                    onChange={(e) =>
-                      updateRows(
-                        rows.map((old, i) =>
-                          i === index
-                            ? {
-                                ...old,
-                                recipe_version_id: e.target.value,
-                                details: null,
-                              }
-                            : old,
-                        ),
-                      )
-                    }
-                  >
-                    {recipes
-                      .filter(
-                        (v) =>
-                          latest.includes(v.id) ||
-                          v.id === row.recipe_version_id,
-                      )
-                      .map((v) => (
-                        <option key={v.id} value={v.id}>
-                          {v.name}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-                <div className="prep-actions">
-                  <button
-                    disabled={locked || rows.length <= 1}
-                    onClick={() =>
-                      updateRows(rows.filter((old) => old.id !== row.id))
-                    }
-                  >
-                    Odstrániť recept z projektu
-                  </button>
-                  <Link href={"/recipes/" + recipe.id + "/batch"}>
-                    Navariť — potvrdiť skutočný výťažok
-                  </Link>
-                  {recipe.freezing && (
-                    <Link href={"/portioning?version=" + recipe.id}>
-                      Formy, vákuovanie a QR balíčky
-                    </Link>
-                  )}
-                </div>
-                <p>
-                  {recipe.prep_minutes
-                    ? `Príprava ${recipe.prep_minutes} min · `
-                    : ""}
-                  {recipe.cooking_minutes_min
-                    ? `Varenie / pečenie približne ${recipe.cooking_minutes_min}–${recipe.cooking_minutes_max ?? recipe.cooking_minutes_min} min · `
-                    : ""}
-                  {recipe.oven_c ? `Rúra ${recipe.oven_c} °C` : ""}
-                </p>
-                <p>
-                  Odhad ceny porcie:{" "}
-                  {row.details?.estimated_cost_minor === undefined
-                    ? "neznámy"
-                    : money(
-                        Math.round(
-                          row.details.estimated_cost_minor /
-                            row.details.planned_portions,
-                        ),
-                      ) + " (AI odhad, nie skutočný náklad)"}
-                </p>
-                {row.details?.active_minutes && (
-                  <p>
-                    Aktívna práca: približne {row.details.active_minutes} min
-                  </p>
-                )}
-                <details>
-                  <summary>Prepojiť skutočne uvarenú várku</summary>
-                  <p>
-                    Najprv vytvorte várku cez Navariť alebo Formy. Tu potvrďte
-                    jej skutočný počet porcií. Toto prepojenie nepohybuje
-                    skladom.
-                  </p>
+                <details className="prep-edit">
+                  <summary>Upraviť alebo vymeniť jedlo</summary>
                   <label>
-                    Skutočná várka
+                    Vymeniť recept
                     <select
-                      aria-label={"Skutočná várka " + row.local_key}
-                      value={batchChoice[row.id] ?? ""}
+                      aria-label={"Vymeniť recept " + row.local_key}
+                      disabled={locked}
+                      value={row.recipe_version_id}
                       onChange={(e) =>
-                        setBatchChoice({
-                          ...batchChoice,
-                          [row.id]: e.target.value,
-                        })
+                        updateRows(
+                          rows.map((old, i) =>
+                            i === index
+                              ? {
+                                  ...old,
+                                  recipe_version_id: e.target.value,
+                                  details: null,
+                                }
+                              : old,
+                          ),
+                        )
                       }
                     >
-                      <option value="">Vyberte vlastnú várku</option>
-                      {batches
+                      {recipes
                         .filter(
-                          (b) =>
-                            b.recipe_version_id === row.recipe_version_id &&
-                            !batchLinks.some((l) => l.batch_id === b.id),
+                          (v) =>
+                            latest.includes(v.id) ||
+                            v.id === row.recipe_version_id,
                         )
-                        .map((b) => (
-                          <option value={b.id} key={b.id}>
-                            {b.created_at.slice(0, 10)} · {b.weight_g} g ·{" "}
-                            {b.id.slice(0, 8)}
+                        .map((v) => (
+                          <option key={v.id} value={v.id}>
+                            {v.name}
                           </option>
                         ))}
                     </select>
                   </label>
-                  <label>
-                    Skutočne pripravené porcie
-                    <input
-                      aria-label={"Skutočné porcie " + row.local_key}
-                      type="number"
-                      min="0.01"
-                      max="100"
-                      value={actualPortions[row.id] ?? row.portions}
-                      onChange={(e) =>
-                        setActualPortions({
-                          ...actualPortions,
-                          [row.id]: Number(e.target.value),
-                        })
+                  <div className="prep-actions">
+                    <button
+                      className="prep-danger"
+                      disabled={locked || rows.length <= 1}
+                      onClick={() =>
+                        window.confirm(
+                          "Odstrániť tento recept z projektu? Zmenu potom uložte.",
+                        ) && updateRows(rows.filter((old) => old.id !== row.id))
                       }
-                    />
-                  </label>
-                  <button
-                    disabled={busy || dirty || !batchChoice[row.id]}
-                    onClick={() => linkBatch(row)}
-                  >
-                    Potvrdiť prepojenie skutočnej várky
-                  </button>
-                  {batchLinks
-                    .filter((l) => l.project_recipe_id === row.id)
-                    .map((l) => (
-                      <div key={l.batch_id}>
-                        <p>
-                          Potvrdené: {l.actual_portions} porcií · várka{" "}
-                          {l.batch_id.slice(0, 8)}
-                        </p>
-                        {packages
-                          .filter((p) => p.batch_id === l.batch_id)
-                          .map((p) => (
-                            <p key={p.id}>
-                              <Link href={"/inventory?id=" + p.id}>
-                                {p.name} · {p.remaining_g} g
-                              </Link>{" "}
-                              ·{" "}
-                              <Link href={"/labels/" + p.id}>
-                                Štítok 50 × 30 mm (PNG/PDF)
-                              </Link>
-                            </p>
-                          ))}
-                      </div>
-                    ))}
+                    >
+                      Odstrániť recept z projektu
+                    </button>
+                  </div>
                 </details>
-                <h4>Suroviny na {row.portions} porcií</h4>
-                <ul>
-                  {recipe.ingredients.map((i, n) => (
-                    <li key={n}>
-                      {i.name}:{" "}
-                      {Math.round(
-                        ((i.quantity * row.portions) / recipe.portions) * 100,
-                      ) / 100}{" "}
-                      {i.unit}
-                    </li>
-                  ))}
-                </ul>
-                <h4>Postup</h4>
-                <ol>
-                  {recipe.steps.map((step, i) => (
-                    <li key={i}>{step}</li>
-                  ))}
-                </ol>
-                {row.details ? (
-                  <>
-                    <h4>Porciovanie a mrazenie</h4>
-                    <p>{row.details.portioning.description}</p>
-                    <p>
-                      Odporúčané objemy:{" "}
-                      {row.details.portioning.mold_ml.join(" / ")} ml. Objem nie
-                      je hmotnosť.
-                    </p>
-                    <p>
-                      <strong>Schladenie:</strong>{" "}
-                      {row.details.preservation.cooling}
-                    </p>
-                    <p>
-                      <strong>Mrazenie:</strong>{" "}
-                      {row.details.preservation.freezing}
-                    </p>
-                    <p>
-                      <strong>Vákuovanie:</strong>{" "}
-                      {row.details.preservation.vacuuming}
-                    </p>
-                    <p>
-                      <strong>Rozmrazovanie:</strong>{" "}
-                      {row.details.preservation.thawing}
-                    </p>
-                    <p>
-                      Deklarované alergény autora:{" "}
-                      {row.details.allergens.join(", ") || "neuvedené"}. Overte
-                      skutočné výrobky a krížovú kontamináciu; prázdny zoznam
-                      nezaručuje neprítomnosť alergénov.
-                    </p>
-                    {row.details.source_url && (
-                      <a
-                        href={row.details.source_url}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        Zdroj receptu
-                      </a>
-                    )}
-                    {row.details.notes && <p>{row.details.notes}</p>}
-                  </>
-                ) : (
+                <div className="prep-actions prep-cook-actions">
+                  <Link
+                    className="button"
+                    href={"/recipes/" + recipe.id + "/batch"}
+                  >
+                    Navariť várku
+                  </Link>
+                  {recipe.freezing && (
+                    <Link href={"/portioning?version=" + recipe.id}>
+                      Rozporciovať a označiť
+                    </Link>
+                  )}
+                </div>
+                <details className="prep-instructions">
+                  <summary>Suroviny, postup a mrazenie</summary>
                   <p>
-                    Pôvodné AI pokyny sa po výmene neprenášajú na iné jedlo.
-                    Použite pokyny vybratej receptovej verzie a existujúce
-                    porciovanie.
+                    {recipe.prep_minutes
+                      ? `Príprava ${recipe.prep_minutes} min · `
+                      : ""}
+                    {recipe.cooking_minutes_min
+                      ? `Varenie / pečenie približne ${recipe.cooking_minutes_min}–${recipe.cooking_minutes_max ?? recipe.cooking_minutes_min} min · `
+                      : ""}
+                    {recipe.oven_c ? `Rúra ${recipe.oven_c} °C` : ""}
                   </p>
-                )}
-                <h4>Skladovanie</h4>
-                <p>{recipe.storage}</p>
-                <h4>Ohrev</h4>
-                <p>{recipe.reheating}</p>
+                  <p>
+                    Odhad ceny porcie:{" "}
+                    {row.details?.estimated_cost_minor === undefined
+                      ? "neznámy"
+                      : money(
+                          Math.round(
+                            row.details.estimated_cost_minor /
+                              row.details.planned_portions,
+                          ),
+                        ) + " (AI odhad, nie skutočný náklad)"}
+                  </p>
+                  {row.details?.active_minutes && (
+                    <p>
+                      Aktívna práca: približne {row.details.active_minutes} min
+                    </p>
+                  )}
+                  <details>
+                    <summary>Prepojiť skutočne uvarenú várku</summary>
+                    <p>
+                      Najprv vytvorte várku cez Navariť alebo Formy. Tu potvrďte
+                      jej skutočný počet porcií. Toto prepojenie nepohybuje
+                      skladom.
+                    </p>
+                    <label>
+                      Skutočná várka
+                      <select
+                        aria-label={"Skutočná várka " + row.local_key}
+                        value={batchChoice[row.id] ?? ""}
+                        onChange={(e) =>
+                          setBatchChoice({
+                            ...batchChoice,
+                            [row.id]: e.target.value,
+                          })
+                        }
+                      >
+                        <option value="">Vyberte vlastnú várku</option>
+                        {batches
+                          .filter(
+                            (b) =>
+                              b.recipe_version_id === row.recipe_version_id &&
+                              !batchLinks.some((l) => l.batch_id === b.id),
+                          )
+                          .map((b) => (
+                            <option value={b.id} key={b.id}>
+                              {b.created_at.slice(0, 10)} · {b.weight_g} g ·{" "}
+                              {b.id.slice(0, 8)}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                    <label>
+                      Skutočne pripravené porcie
+                      <input
+                        aria-label={"Skutočné porcie " + row.local_key}
+                        type="number"
+                        min="0.01"
+                        max="100"
+                        value={actualPortions[row.id] ?? row.portions}
+                        onChange={(e) =>
+                          setActualPortions({
+                            ...actualPortions,
+                            [row.id]: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </label>
+                    <button
+                      disabled={busy || dirty || !batchChoice[row.id]}
+                      onClick={() => linkBatch(row)}
+                    >
+                      Potvrdiť prepojenie skutočnej várky
+                    </button>
+                    {batchLinks
+                      .filter((l) => l.project_recipe_id === row.id)
+                      .map((l) => (
+                        <div key={l.batch_id}>
+                          <p>
+                            Potvrdené: {l.actual_portions} porcií · várka{" "}
+                            {l.batch_id.slice(0, 8)}
+                          </p>
+                          {packages
+                            .filter((p) => p.batch_id === l.batch_id)
+                            .map((p) => (
+                              <p key={p.id}>
+                                <Link href={"/inventory?id=" + p.id}>
+                                  {p.name} · {p.remaining_g} g
+                                </Link>{" "}
+                                ·{" "}
+                                <Link href={"/labels/" + p.id}>
+                                  Štítok 50 × 30 mm (PNG/PDF)
+                                </Link>
+                              </p>
+                            ))}
+                        </div>
+                      ))}
+                  </details>
+                  <h4>Suroviny na {row.portions} porcií</h4>
+                  <ul>
+                    {recipe.ingredients.map((i, n) => (
+                      <li key={n}>
+                        {i.name}:{" "}
+                        {Math.round(
+                          ((i.quantity * row.portions) / recipe.portions) * 100,
+                        ) / 100}{" "}
+                        {i.unit}
+                      </li>
+                    ))}
+                  </ul>
+                  <h4>Postup</h4>
+                  <ol>
+                    {recipe.steps.map((step, i) => (
+                      <li key={i}>{step}</li>
+                    ))}
+                  </ol>
+                  {row.details ? (
+                    <>
+                      <h4>Porciovanie a mrazenie</h4>
+                      <p>{row.details.portioning.description}</p>
+                      <p>
+                        Odporúčané objemy:{" "}
+                        {row.details.portioning.mold_ml.join(" / ")} ml. Objem
+                        nie je hmotnosť.
+                      </p>
+                      <p>
+                        <strong>Schladenie:</strong>{" "}
+                        {row.details.preservation.cooling}
+                      </p>
+                      <p>
+                        <strong>Mrazenie:</strong>{" "}
+                        {row.details.preservation.freezing}
+                      </p>
+                      <p>
+                        <strong>Vákuovanie:</strong>{" "}
+                        {row.details.preservation.vacuuming}
+                      </p>
+                      <p>
+                        <strong>Rozmrazovanie:</strong>{" "}
+                        {row.details.preservation.thawing}
+                      </p>
+                      <p>
+                        Deklarované alergény autora:{" "}
+                        {row.details.allergens.join(", ") || "neuvedené"}.
+                        Overte skutočné výrobky a krížovú kontamináciu; prázdny
+                        zoznam nezaručuje neprítomnosť alergénov.
+                      </p>
+                      {row.details.source_url && (
+                        <a
+                          href={row.details.source_url}
+                          rel="noreferrer"
+                          target="_blank"
+                        >
+                          Zdroj receptu
+                        </a>
+                      )}
+                      {row.details.notes && <p>{row.details.notes}</p>}
+                    </>
+                  ) : (
+                    <p>
+                      Pôvodné AI pokyny sa po výmene neprenášajú na iné jedlo.
+                      Použite pokyny vybratej receptovej verzie a existujúce
+                      porciovanie.
+                    </p>
+                  )}
+                  <h4>Skladovanie</h4>
+                  <p>{recipe.storage}</p>
+                  <h4>Ohrev</h4>
+                  <p>{recipe.reheating}</p>
+                </details>
               </article>
             );
           })}
@@ -694,6 +710,10 @@ export default function Project({
         <aside>
           <section className="prep-summary">
             <h2 id="prep-shopping">Spoločný nákup</h2>
+            <p className="prep-progress">
+              {calculation.items.filter((i) => i.checked).length} z{" "}
+              {calculation.items.length} položiek nakúpených
+            </p>
             <p>
               Vypočítané zo všetkých aktuálne vybraných receptových verzií.
               Použiteľné zásoby špajze sú odpočítané bez skladového odpisu.
@@ -743,61 +763,64 @@ export default function Project({
                 )}
               </div>
             ))}
-            <h3>Manuálna položka</h3>
-            <label>
-              Názov položky
-              <input
-                value={manualName}
-                onChange={(e) => setManualName(e.target.value)}
-                maxLength={160}
-              />
-            </label>
-            <label>
-              Množstvo
-              <input
-                type="number"
-                min="0"
-                value={manualQuantity}
-                onChange={(e) => setManualQuantity(Number(e.target.value))}
-              />
-            </label>
-            <label>
-              Jednotka
-              <select
-                value={manualUnit}
-                onChange={(e) =>
-                  setManualUnit(e.target.value as "g" | "ml" | "ks")
-                }
+            <details className="prep-manual">
+              <summary>+ Pridať vlastnú položku</summary>
+              <h3>Manuálna položka</h3>
+              <label>
+                Názov položky
+                <input
+                  value={manualName}
+                  onChange={(e) => setManualName(e.target.value)}
+                  maxLength={160}
+                />
+              </label>
+              <label>
+                Množstvo
+                <input
+                  type="number"
+                  min="0"
+                  value={manualQuantity}
+                  onChange={(e) => setManualQuantity(Number(e.target.value))}
+                />
+              </label>
+              <label>
+                Jednotka
+                <select
+                  value={manualUnit}
+                  onChange={(e) =>
+                    setManualUnit(e.target.value as "g" | "ml" | "ks")
+                  }
+                >
+                  <option value="ks">ks</option>
+                  <option value="g">g</option>
+                  <option value="ml">ml</option>
+                </select>
+              </label>
+              <button
+                disabled={!manualName.trim()}
+                onClick={() => {
+                  setItems([
+                    ...calculation.items,
+                    {
+                      id: uuid(),
+                      ingredient_key: manualName.toLowerCase(),
+                      name: manualName.trim(),
+                      unit: manualUnit,
+                      quantity: manualQuantity,
+                      manual: true,
+                      required: 0,
+                      checked: false,
+                      origins: [],
+                      selection: null,
+                    },
+                  ]);
+                  setManualName("");
+                  setDirty(true);
+                }}
               >
-                <option value="ks">ks</option>
-                <option value="g">g</option>
-                <option value="ml">ml</option>
-              </select>
-            </label>
-            <button
-              disabled={!manualName.trim()}
-              onClick={() => {
-                setItems([
-                  ...calculation.items,
-                  {
-                    id: uuid(),
-                    ingredient_key: manualName.toLowerCase(),
-                    name: manualName.trim(),
-                    unit: manualUnit,
-                    quantity: manualQuantity,
-                    manual: true,
-                    required: 0,
-                    checked: false,
-                    origins: [],
-                    selection: null,
-                  },
-                ]);
-                setManualName("");
-                setDirty(true);
-              }}
-            >
-              Pridať manuálnu položku
-            </button>
+                Pridať manuálnu položku
+              </button>
+            </details>
             <div className="prep-actions">
               <button onClick={() => exportFile(false)}>Export TXT</button>
               <button onClick={() => exportFile(true)}>Export CSV</button>
